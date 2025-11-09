@@ -1,14 +1,330 @@
 {% extends 'frontoffice/base.html' %}
 {% load static %}
 
-{% block title %}Accueil - AISE{% endblock %}
+{% block title %}AISE - Cabinet de communication institutionnelle{% endblock %}
 
 {% block content %}
-<div class="text-center py-12">
-    <h1 class="text-4xl font-bold text-gray-800 mb-4">Bienvenue sur AISE</h1>
-    <p class="text-lg text-gray-600 mb-8">Cabinet de communication institutionnelle</p>
-    <a href="{% url 'contact' %}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
-        Nous contacter
-    </a>
-</div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --text: #1a1a1a;
+            --light: #f5f5f5;
+            --gray: #666;
+            --border: #e5e5e5;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; color: var(--text); line-height: 1.7; background: #fff; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        section { padding: 100px 0; }
+        h1, h2, h3 { font-weight: 600; letter-spacing: -0.5px; }
+        h1 { font-size: 3.2rem; margin-bottom: 1.5rem; }
+        h2 { font-size: 2.4rem; margin-bottom: 1.2rem; }
+        p { margin-bottom: 1.5rem; color: var(--gray); }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 140px 0 100px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
+        .hero .tagline {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--primary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .hero h1 {
+            font-size: 3.8rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: var(--gray);
+        }
+
+        /* Section Title */
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .section-title h2 {
+            font-size: 2.8rem;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        /* Expertise Grid */
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+        .expertise-card {
+            background: #fff;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .expertise-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-wrapper svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+        .expertise-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        /* FAQ */
+        .faq {
+            background: var(--light);
+        }
+        .faq-item {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+        .faq-item h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+        .faq-item ul {
+            margin-left: 1.5rem;
+            margin-top: 1rem;
+        }
+        .faq-item li {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        .faq-item li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: -1.5rem;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, #0052a3 100%);
+            color: white;
+            border-radius: 20px;
+            margin: 3rem 0;
+        }
+        .cta h2 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .cta p {
+            color: rgba(255,255,255,0.9);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        .btn {
+            display: inline-block;
+            background: white;
+            color: var(--primary);
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.8rem; }
+            .hero h1 { font-size: 3rem; }
+            section { padding: 70px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <p class="tagline">« Donner du sens avant de donner la parole. »</p>
+        <h1>Transformons vos idées en stratégies gagnantes</h1>
+        <p>
+            Nous vous accompagnons dans la conception, le déploiement et l’optimisation de vos stratégies de communication 
+            pour maximiser votre visibilité et renforcer votre image de marque.
+        </p>
+    </div>
+</section>
+
+<!-- About -->
+<section>
+    <div class="container">
+        <div class="section-title">
+            <h2>AISE – Cabinet de communication institutionnelle</h2>
+        </div>
+        <p style="text-align:center; max-width:800px; margin:0 auto 3rem;">
+            AISE est un cabinet de conseil spécialisé en communication institutionnelle, qui accompagne les organisations 
+            publiques, privées et internationales dans la définition et la mise en œuvre de stratégies de communication 
+            à forte valeur ajoutée.
+        </p>
+
+        <!-- Expertise Grid -->
+        <div class="expertise-grid">
+            <div class="expertise-card">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/></svg>
+                </div>
+                <h3>Clarté</h3>
+                <p>Rendre les messages institutionnels accessibles, cohérents et pertinents.</p>
+            </div>
+            <div class="expertise-card">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L7 14.17l7.59-7.59L16 8l-6 6z"/></svg>
+                </div>
+                <h3>Crédibilité</h3>
+                <p>Renforcer la légitimité des institutions à travers des récits solides et documentés.</p>
+            </div>
+            <div class="expertise-card">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                </div>
+                <h3>Rayonnement</h3>
+                <p>Déployer des stratégies de visibilité et d’influence à l’échelle locale, régionale et internationale.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+    <div class="container">
+        <div class="section-title">
+            <h2>Foire Aux Questions</h2>
+        </div>
+
+        <div class="faq-item">
+            <h3>Travailler avec AISE</h3>
+            <p>
+                AISE ne se limite pas à la production de contenus ou de visuels. Nous intervenons sur la stratégie globale 
+                de communication institutionnelle, en aidant les organisations à aligner leur image, leur culture interne 
+                et leurs objectifs d’impact. Chaque projet s’accompagne d’un travail de diagnostic, de positionnement et 
+                d’évaluation, garantissant une cohérence entre discours et réalité.
+            </p>
+            <p><strong>Nous travaillons avec un large éventail d’acteurs :</strong></p>
+            <ul>
+                <li>Entreprises nationales et multinationales,</li>
+                <li>Institutions publiques,</li>
+                <li>Organisations internationales et ONG,</li>
+                <li>Projets de coopération et acteurs de la société civile.</li>
+            </ul>
+            <p style="margin-top:1.5rem;">
+                AISE adapte ses méthodes à la maturité communicationnelle de chaque structure, du niveau local au niveau stratégique.
+            </p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Nos interventions permettent à nos partenaires de :</h3>
+            <ul>
+                <li>Structurer une communication claire et crédible</li>
+                <li>Valoriser leur RSE et leur impact social ;</li>
+                <li>Améliorer la cohésion interne et la culture d’entreprise</li>
+                <li>Renforcer la visibilité institutionnelle auprès des partenaires et bailleurs</li>
+                <li>Obtenir des outils et référentiels durables pour piloter leur communication à long terme.</li>
+            </ul>
+        </div>
+
+        <div class="faq-item">
+            <p>
+                <strong>Chaque mission suit une démarche éprouvée :</strong>
+            </p>
+            <ol style="margin-left:1.5rem; margin-top:1rem;">
+                <li><strong>Diagnostic stratégique :</strong> compréhension du contexte, des enjeux et des besoins.</li>
+                <li><strong>Co-construction :</strong> ateliers participatifs et alignement sur les messages clés.</li>
+                <li><strong>Déploiement opérationnel :</strong> production, accompagnement et diffusion.</li>
+                <li><strong>Suivi et évaluation :</strong> mesure d’impact, restitution et plan d’amélioration.</li>
+            </ol>
+            <p style="margin-top:1.5rem;">
+                Cette approche garantit des livrables concrets et une appropriation durable par les équipes.
+            </p>
+            <p>
+                Chaque projet est conçu à partir d’un brief personnalisé et d’un diagnostic préalable, afin de proposer 
+                des solutions adaptées à la réalité du client : communication interne, marque employeur, stratégie 
+                institutionnelle, RSE, ou communication digitale.
+            </p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Expertise et valeur ajoutée</h3>
+            <p>
+                AISE aide les organisations à transformer leurs engagements RSE en récits crédibles et mesurables. 
+                Nous accompagnons la structuration de politiques RSE, la communication des impacts, et la conception 
+                de campagnes qui valorisent les initiatives sans tomber dans le “greenwashing”.
+            </p>
+            <p style="margin-top:1.5rem;">
+                AISE fait partie des premiers cabinets en Tunisie à intégrer l’IA au cœur de ses services. 
+                Nous proposons des packs de communication sur mesure, conçus à partir des outils IA les plus performants 
+                du marché. Résultat : une exécution rapide, des stratégies précises, et une créativité amplifiée. 
+                Avec AISE, l’IA devient un atout concret pour des campagnes plus efficaces, cohérentes et durables.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section>
+    <div class="container">
+        <div class="cta">
+            <h2>Prêt à transformer votre communication ?</h2>
+            <p>Contactez-nous dès aujourd'hui pour un diagnostic gratuit de votre stratégie institutionnelle.</p>
+            <a href="{% url 'contact' %}" class="btn">Nous contacter</a>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
 {% endblock %}

@@ -1,9 +1,118 @@
-{% extends 'backoffice/base.html' %}
-{% block title %}Dashboard{% endblock %}
+{% extends "backoffice/base.html" %}
+{% load static %}
+{% block page_title %}Tableau de bord{% endblock %}
 
 {% block content %}
-<h2>Dashboard Backoffice</h2>
-<p>Total utilisateurs : {{ total_users }}</p>
-<p>Total clients : {{ total_clients }}</p>
-<p>Total visiteurs : {{ total_visitors }}</p>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Carte Stat 1 -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-600">Utilisateurs</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">1,234</p>
+                <p class="text-xs text-green-600 mt-2">+12% ce mois</p>
+            </div>
+            <div class="p-3 bg-blue-100 rounded-full">
+                <i class="fas fa-users text-blue-600 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carte Stat 2 -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-600">Projets actifs</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">89</p>
+                <p class="text-xs text-green-600 mt-2">+5 nouveaux</p>
+            </div>
+            <div class="p-3 bg-green-100 rounded-full">
+                <i class="fas fa-folder-open text-green-600 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carte Stat 3 -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-600">Réclamations</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">23</p>
+                <p class="text-xs text-orange-600 mt-2">3 en attente</p>
+            </div>
+            <div class="p-3 bg-orange-100 rounded-full">
+                <i class="fas fa-envelope text-orange-600 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carte Stat 4 -->
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-600">Articles publiés</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">156</p>
+                <p class="text-xs text-green-600 mt-2">+18 ce mois</p>
+            </div>
+            <div class="p-3 bg-purple-100 rounded-full">
+                <i class="fas fa-newspaper text-purple-600 text-xl"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section raccourcis -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <a href="{% url 'users:backoffice_users' %}" 
+       class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-semibold">Gérer les utilisateurs</h3>
+                <p class="text-blue-100 text-sm mt-1">Ajouter, modifier, supprimer</p>
+            </div>
+            <i class="fas fa-arrow-right text-xl"></i>
+        </div>
+    </a>
+
+    <a href="#" 
+       class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-semibold">Projets</h3>
+                <p class="text-green-100 text-sm mt-1">Suivi et validation</p>
+            </div>
+            <i class="fas fa-arrow-right text-xl"></i>
+        </div>
+    </a>
+
+    <a href="#" 
+       class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-semibold">Publications</h3>
+                <p class="text-purple-100 text-sm mt-1">Blog & actualités</p>
+            </div>
+            <i class="fas fa-arrow-right text-xl"></i>
+        </div>
+    </a>
+</div>
+
+<!-- Activité récente (optionnel) -->
+<div class="mt-10 bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Activité récente</h3>
+    <ul class="space-y-3 text-sm text-gray-600">
+        <li class="flex items-center gap-3">
+            <i class="fas fa-user-plus text-green-500"></i>
+            <span>Nouvel admin <strong>jean.dupont</strong> ajouté il y a 2h</span>
+        </li>
+        <li class="flex items-center gap-3">
+            <i class="fas fa-edit text-blue-500"></i>
+            <span>Projet <strong>#128</strong> mis à jour</span>
+        </li>
+        <li class="flex items-center gap-3">
+            <i class="fas fa-envelope text-orange-500"></i>
+            <span>Nouvelle réclamation reçue</span>
+        </li>
+    </ul>
+</div>
 {% endblock %}

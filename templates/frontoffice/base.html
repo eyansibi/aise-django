@@ -10,25 +10,60 @@
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 
-    <header class="bg-white shadow-sm">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-blue-700">AISE</h1>
-            <nav>
-                <ul class="flex space-x-6">
-                    <li><a href="{% url 'home' %}" class="hover:text-blue-600">Accueil</a></li>
-                    <li><a href="{% url 'contact' %}" class="hover:text-blue-600">Contact</a></li>
+        <header class="bg-white shadow-sm border-b border-gray-100">
+        <div class="container mx-auto px-4 py-5">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="{% url 'home' %}" class="text-2xl font-bold text-blue-600 hover:text-blue-700 transition">
+                    AISE
+                </a>
 
-                    {% if user.is_authenticated %}
-                        <li><span class="text-gray-600">Bonjour, <strong>{{ user.username }}</strong></span></li>
+                <!-- Navigation -->
+                <nav>
+                    <ul class="flex space-x-8 items-center text-sm font-medium">
                         <li>
-                            <a href="{% url 'users:logout' %}" class="text-red-600 hover:underline">Déconnexion</a>
+                            <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 transition {% if request.resolver_match.url_name == 'home' %}text-blue-600 font-semibold{% endif %}">
+                                Bienvenue
+                            </a>
                         </li>
-                    {% else %}
-                        <li><a href="{% url 'users:login' %}" class="text-green-600 hover:underline">Connexion</a></li>
-                        <li><a href="{% url 'users:register' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">S'inscrire</a></li>
+                        
+                        <li>
+                            <a href="#qui-sommes-nous" class="text-gray-700 hover:text-blue-600 transition">
+                                Qui sommes-nous
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#expertises" class="text-gray-700 hover:text-blue-600 transition">
+                                Nos expertises
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#voix-aise" class="text-gray-700 hover:text-blue-600 transition">
+                                La voix d'AISE
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#projets" class="text-gray-700 hover:text-blue-600 transition">
+                                Projets
+                            </a>
+                        </li>
+
+                        <!-- Bouton Contact -->
+                        <li>
+                            <a href="{% url 'contact' %}" class="bg-blue-600 text-white px-5 py-2.5 rounded-full hover:bg-blue-700 transition font-medium text-sm">
+                                Contact
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Auth (mobile ou petit écran) -->
+                <div class="md:hidden">
+                    {% if user.is_authenticated %}
+                        <span class="text-sm text-gray-600">Bonjour, {{ user.username }}</span>
                     {% endif %}
-                </ul>
-            </nav>
+                </div>
+            </div>
         </div>
     </header>
 

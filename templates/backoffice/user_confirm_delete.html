@@ -1,0 +1,38 @@
+{% extends "backoffice/base.html" %}
+{% load static %}
+{% block page_title %}Supprimer l'utilisateur{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-10">
+    <div class="bg-white rounded-xl shadow-sm p-8 border border-gray-200 text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+        </div>
+
+        <h1 class="text-2xl font-bold text-gray-800 mb-3">Confirmer la suppression</h1>
+
+        <p class="text-gray-600 mb-8 leading-relaxed">
+            Êtes-vous sûr de vouloir supprimer l'utilisateur :<br>
+            <strong class="text-lg text-red-700">{{ user_obj.username }}</strong>
+            {% if user_obj.nom %} ({{ user_obj.nom }}){% endif %} ?
+            <br><br>
+            <span class="text-sm text-red-600 font-medium">Cette action est irréversible.</span>
+        </p>
+
+        <form method="post" class="inline">
+            {% csrf_token %}
+            <button type="submit"
+                    class="bg-red-600 text-white px-6 py-2.5 rounded-lg hover:bg-red-700 transition font-medium flex items-center gap-2 mx-auto">
+                <i class="fas fa-trash"></i>
+                Supprimer définitivement
+            </button>
+        </form>
+
+        <!-- CORRIGÉ ICI -->
+        <a href="{% url 'users:backoffice_users' %}"
+           class="mt-4 inline-block bg-gray-200 text-gray-700 px-6 py-2.5 rounded-lg hover:bg-gray-300 transition font-medium">
+            Annuler
+        </a>
+    </div>
+</div>
+{% endblock %}
