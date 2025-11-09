@@ -1,0 +1,32 @@
+{% extends 'backoffice/base.html' %}
+{% block title %}Gestion des utilisateurs{% endblock %}
+
+{% block content %}
+<h2>Liste des utilisateurs</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nom d'utilisateur</th>
+            <th>Email</th>
+            <th>Nom complet</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.nom }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+                <a href="{% url 'backoffice_user_edit' user.id %}">Modifier</a>
+                <a href="{% url 'backoffice_user_delete' user.id %}">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'backoffice_user_add' %}">Ajouter un utilisateur</a>
+{% endblock %}

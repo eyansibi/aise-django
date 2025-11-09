@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AISE{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-700">AISE</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="{% url 'home' %}" class="hover:text-blue-600">Accueil</a></li>
+                    <li><a href="{% url 'contact' %}" class="hover:text-blue-600">Contact</a></li>
+
+                    {% if user.is_authenticated %}
+                        <li><span class="text-gray-600">Bonjour, <strong>{{ user.username }}</strong></span></li>
+                        <li>
+                            <a href="{% url 'users:logout' %}" class="text-red-600 hover:underline">Déconnexion</a>
+                        </li>
+                    {% else %}
+                        <li><a href="{% url 'users:login' %}" class="text-green-600 hover:underline">Connexion</a></li>
+                        <li><a href="{% url 'users:register' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">S'inscrire</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <!-- Messages -->
+        {% if messages %}
+            <div class="mb-6">
+                {% for message in messages %}
+                    <div class="p-4 rounded-lg mb-2 {% if message.tags == 'error' %}bg-red-100 text-red-700 border border-red-300{% else %}bg-green-100 text-green-700 border border-green-300{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-4 mt-auto">
+        <p>© 2025 AISE - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

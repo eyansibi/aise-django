@@ -1,22 +1,28 @@
-"""
-URL configuration for aise_project project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+# aise_project/urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import RedirectView
+# Import des vues publiques (home, contact)
+from users import views as user_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # === FrontOffice (vues publiques) ===
+   # === FrontOffice ===
+    path('', user_views.home, name='home'),                    # Page d'accueil
+    path('home/', RedirectView.as_view(url='/')),              # ← Redirection /home → /
+    path('contact/', user_views.contact_view, name='contact'),
+
+    # === Users App (auth + backoffice) ===
+    path('', include('users.urls')),  # Inclut tout : register, login, backoffice...
+
+    # === Autres apps ===
+    # path('projets/', include('projets.urls')),
+    # path('reclamations/', include('reclamations.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

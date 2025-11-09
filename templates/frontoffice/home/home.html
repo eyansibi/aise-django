@@ -1,0 +1,14 @@
+{% extends 'frontoffice/base.html' %}
+{% load static %}
+
+{% block title %}Accueil - AISE{% endblock %}
+
+{% block content %}
+<div class="text-center py-12">
+    <h1 class="text-4xl font-bold text-gray-800 mb-4">Bienvenue sur AISE</h1>
+    <p class="text-lg text-gray-600 mb-8">Cabinet de communication institutionnelle</p>
+    <a href="{% url 'contact' %}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+        Nous contacter
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Backoffice - AISE{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/backoffice.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'backoffice_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'backoffice_users' %}">Gestion Utilisateurs</a></li>
+                <li><a href="{% url 'logout' %}">Déconnexion</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
