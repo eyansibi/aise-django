@@ -1,0 +1,36 @@
+{% extends "frontoffice/base.html" %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12">
+    <a href="{% url 'blogs:blogs_public' %}" class="inline-flex items-center text-purple-600 hover:text-purple-800 mb-8">
+        <i class="fas fa-arrow-left mr-2"></i> Retour au blog
+    </a>
+
+    <article class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        {% if blog.image %}
+            <img src="{{ blog.image.url }}" alt="{{ blog.titre }}" class="w-full h-96 object-cover">
+        {% else %}
+            <div class="w-full h-96 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
+                <i class="fas fa-newspaper text-8xl text-purple-600"></i>
+            </div>
+        {% endif %}
+
+        <div class="p-8 lg:p-12">
+            <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">{{ blog.titre }}</h1>
+            
+            <div class="flex items-center text-sm text-gray-500 mb-6">
+                <i class="fas fa-calendar mr-2"></i>
+                <span>{{ blog.date_publication|date:"d F Y" }}</span>
+                <span class="mx-2">•</span>
+                <span>par {{ blog.auteur.get_full_name|default:blog.auteur.username }}</span>
+            </div>
+
+            <div class="prose prose-lg max-w-none text-gray-700">
+                {{ blog.contenu|linebreaks }}
+            </div>
+        </div>
+    </article>
+</div>
+{% endblock %}

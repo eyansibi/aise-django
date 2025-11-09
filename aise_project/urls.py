@@ -21,7 +21,9 @@ urlpatterns = [
     # === Autres apps ===
 
     # === Projets App (backoffice) ===
-    path('projets/', include('projets.urls')),  # ← AJOUTE ÇA
+    path('projets/', include('projets.urls')),
+      
+    path('blogs/', include('blogs.urls')),  # ← AJOUTE ÇA
 ]
 
 if settings.DEBUG:
