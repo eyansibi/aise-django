@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'users',
     'projets',
     'reclamations',
+    'blogs',
 ]
 
 # ------------------ Middleware ------------------

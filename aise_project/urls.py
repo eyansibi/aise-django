@@ -6,7 +6,6 @@ from django.conf.urls.static import static
 from django.views.generic import RedirectView
 # Import des vues publiques (home, contact)
 from users import views as user_views
-
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -20,8 +19,9 @@ urlpatterns = [
     path('', include('users.urls')),  # Inclut tout : register, login, backoffice...
 
     # === Autres apps ===
-    # path('projets/', include('projets.urls')),
-    # path('reclamations/', include('reclamations.urls')),
+
+    # === Projets App (backoffice) ===
+    path('projets/', include('projets.urls')),  # ← AJOUTE ÇA
 ]
 
 if settings.DEBUG:

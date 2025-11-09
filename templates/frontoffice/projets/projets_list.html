@@ -1,0 +1,46 @@
+{% extends "frontoffice/base.html" %}
+{% load static %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Nos Projets</h1>
+        <p class="text-lg text-gray-600">Découvrez nos réalisations les plus récentes</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for projet in projets %}
+        <a href="{% url 'projets:projet_detail_public' projet.id %}" class="group block bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+            <div class="aspect-w-16 aspect-h-9 bg-gray-200">
+                {% if projet.image %}
+                    <img src="{{ projet.image.url }}" alt="{{ projet.titre }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                {% else %}
+                    <div class="w-full h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                        <i class="fas fa-folder-open text-4xl text-blue-600"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition">
+                    {{ projet.titre }}
+                </h3>
+                <p class="text-gray-600 line-clamp-2 mb-3">
+                    {{ projet.description|truncatewords:20 }}
+                </p>
+                <div class="flex items-center text-sm text-gray-500">
+                    <i class="fas fa-calendar mr-2"></i>
+                    {{ projet.date_creation|date:"d F Y" }}
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="col-span-full text-center py-12">
+            <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+            <p class="text-xl text-gray-500">Aucun projet terminé pour le moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
