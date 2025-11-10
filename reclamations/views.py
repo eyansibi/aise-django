@@ -54,14 +54,46 @@ def backoffice_reclamation_detail(request, reclamation_id):
     reclamation = get_object_or_404(Reclamation, pk=reclamation_id)
     if request.method == 'POST':
         statut = request.POST.get('statut')
-        reponse = request.POST.get('reponse')
-        if statut in ['traite', 'rejete']:
+        reponse = request.POST.get('reponse', '').strip()
+        if statut in ['traite', 'rejete'] and reponse:
+            # === SAUVEGARDE ===
             reclamation.statut = statut
             reclamation.reponse = reponse
             reclamation.traite_par = request.user
             reclamation.date_traitement = timezone.now()
             reclamation.save()
-            messages.success(request, f"Réclamation marquée comme {statut}.")
+
+            # === ENVOI EMAIL ===
+            sujet = f"[AISE] Réponse à votre réclamation : {reclamation.sujet}"
+            message = f"""
+            Bonjour {reclamation.nom},
+
+            Nous avons bien reçu votre réclamation du {reclamation.date_reception.strftime("%d/%m/%Y à %H:%M")}.
+
+            **Statut :** {reclamation.get_statut_display().upper()}
+            **Notre réponse :**
+
+            {reponse}
+
+            ---
+            Merci pour votre confiance.
+            Cordialement,
+            L'équipe AISE
+            contact@aise.tn
+            """
+
+            try:
+                send_mail(
+                    subject=sujet,
+                    message=message,
+                    from_email=None,  # utilise DEFAULT_FROM_EMAIL
+                    recipient_list=[reclamation.email],
+                    fail_silently=False,
+                )
+                messages.success(request, f"Réponse envoyée à {reclamation.email}")
+            except Exception as e:
+                messages.error(request, f"Réponse sauvegardée, mais email échoué : {e}")
+
             return redirect('reclamations:backoffice_reclamations')
     return render(request, 'backoffice/reclamations/reclamation_detail.html', {
         'reclamation': reclamation

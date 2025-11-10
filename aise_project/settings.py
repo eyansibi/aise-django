@@ -104,3 +104,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # ------------------ Default PK ------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# === CONFIG EMAIL (Gmail) ===
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'eya.nsibi@esprit.tn'  # ou ton Gmail
+EMAIL_HOST_PASSWORD = 'tnolyqjoviebhomt'  # ← mot de passe d'application (voir étape 2)
+DEFAULT_FROM_EMAIL = 'AISE <contact@aise.tn>'

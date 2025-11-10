@@ -40,33 +40,33 @@
         {% endif %}
 
         {% if reclamation.statut == 'en_attente' %}
-        <form method="post" class="space-y-6">
-            {% csrf_token %}
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
-                <select name="statut" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="traite">Traité</option>
-                    <option value="rejete">Rejeté</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Réponse</label>
-                <textarea name="reponse" rows="5" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Expliquez votre décision..."></textarea>
-            </div>
-            <div class="flex gap-3">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition font-medium">
-                    Envoyer la réponse
-                </button>
-                <a href="{% url 'reclamations:backoffice_reclamations' %}" class="bg-gray-200 text-gray-700 px-6 py-2.5 rounded-lg hover:bg-gray-300 transition font-medium">
-                    Retour
-                </a>
-            </div>
-        </form>
-        {% else %}
-        <a href="{% url 'reclamations:backoffice_reclamations' %}" class="bg-gray-200 text-gray-700 px-6 py-2.5 rounded-lg hover:bg-gray-300 transition font-medium inline-block">
-            Retour à la liste
-        </a>
-        {% endif %}
+<form method="post" class="space-y-6">
+    {% csrf_token %}
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+        <select name="statut" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg" required>
+            <option value="traite">Traité</option>
+            <option value="rejete">Rejeté</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Réponse (envoyée par email)
+        </label>
+        <textarea name="reponse" rows="6" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg" 
+                  placeholder="Votre réponse sera envoyée automatiquement..." required></textarea>
+    </div>
+    <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 flex items-center gap-2">
+        Envoyer la réponse
+    </button>
+</form>
+{% else %}
+<div class="bg-green-50 border border-green-200 rounded-lg p-6">
+    <p class="text-green-800 font-medium">
+        Réponse envoyée le {{ reclamation.date_traitement|date:"d/m/Y à H:i" }}
+    </p>
+</div>
+{% endif %}
     </div>
 </div>
 {% endblock %}
