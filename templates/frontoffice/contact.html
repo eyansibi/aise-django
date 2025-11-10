@@ -1,11 +1,357 @@
 {% extends 'frontoffice/base.html' %}
-{% block title %}Contact{% endblock %}
 {% load static %}
+
+{% block title %}Contactez AISE - Cabinet de communication institutionnelle{% endblock %}
+
 {% block content %}
-<h2>Contactez-nous</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Envoyer</button>
-</form>
+<!-- ====================== CUSTOM CSS ====================== -->
+<style>
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .animate-fade-in { animation: fade-in 0.8s ease-out forwards; opacity: 0; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-500 { animation-delay: 0.5s; }
+
+    /* === CONTACT SECTION === */
+    .contact-hero {
+        background: linear-gradient(135deg, #f8f9fa 0%, #f0f5f3 100%);
+        padding: 6rem 0 4rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: radial-gradient(circle at 10% 90%, rgba(8, 112, 101, 0.08) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .contact-card {
+        background: white;
+        border-radius: 2rem;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: all 0.4s ease;
+        border: 1px solid #e5e7eb;
+    }
+    .contact-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+    .form-control {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(8, 112, 101, 0.1);
+    }
+    .form-control::placeholder {
+        color: #9ca3af;
+    }
+
+    .btn-submit {
+        background: var(--primary);
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 9999px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        box-shadow: 0 10px 30px rgba(8, 112, 101, 0.3);
+    }
+    .btn-submit:hover {
+        background: #065a52;
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(8, 112, 101, 0.4);
+    }
+    .btn-submit:active {
+        transform: translateY(-1px);
+    }
+
+    /* === INFO CARD === */
+    .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .info-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, var(--primary), #065a52);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 8px 20px rgba(8,112,101,0.3);
+    }
+    .info-icon svg {
+        width: 28px;
+        height: 28px;
+        fill: white;
+    }
+    .info-content h4 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+    .info-content p {
+        color: #4b5563;
+        margin: 0;
+        line-height: 1.6;
+    }
+    .info-content a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    .info-content a:hover {
+        color: var(--secondary);
+    }
+
+    /* === MAP === */
+    .map-container {
+        height: 400px;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        margin-top: 2rem;
+    }
+
+    /* === SOCIAL ICONS === */
+    .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    .social-link {
+        width: 48px;
+        height: 48px;
+        background: #f3f4f6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        color: var(--primary);
+    }
+    .social-link:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(8,112,101,0.3);
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+        .contact-hero { padding: 4rem 0 3rem; }
+        .contact-card { padding: 1.5rem; }
+        .form-control { padding: 0.875rem 1rem; }
+        .btn-submit { padding: 0.875rem 2rem; font-size: 1rem; }
+        .info-item { flex-direction: column; text-align: center; }
+        .info-icon { margin: 0 auto 1rem; }
+        .map-container { height: 300px; }
+    }
+</style>
+
+<!-- ====================== CONTACT HERO ====================== -->
+<section class="contact-hero relative">
+    <div class="container relative z-10">
+        <div class="text-center mb-12 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[var(--primary)] mb-4">
+                Contactez <span class="text-[var(--secondary)]">AISE</span>
+            </h1>
+            <p class="text-xl text-gray-700 max-w-3xl mx-auto">
+                Discutons de votre projet. Un diagnostic gratuit de votre stratégie de communication vous attend.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ====================== CONTACT FORM + INFO ====================== -->
+<section class="py-16 bg-white">
+    <div class="container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            
+            <!-- FORM -->
+            <div class="contact-card p-8 lg:p-10 animate-fade-in delay-300">
+                <h2 class="text-3xl font-extrabold text-[var(--primary)] mb-8">
+                    Envoyez-nous un message
+                </h2>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.nom.id_for_label }}">Nom complet *</label>
+                            {{ form.nom }}
+                            {% if form.nom.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.nom.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.email.id_for_label }}">Email *</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.email.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.telephone.id_for_label }}">Téléphone</label>
+                            {{ form.telephone }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.organisation.id_for_label }}">Organisation</label>
+                            {{ form.organisation }}
+                        </div>
+
+                        <div class="form-group md:col-span-2">
+                            <label class="form-label" for="{{ form.sujet.id_for_label }}">Sujet *</label>
+                            {{ form.sujet }}
+                            {% if form.sujet.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.sujet.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group md:col-span-2">
+                            <label class="form-label" for="{{ form.message.id_for_label }}">Message *</label>
+                            {{ form.message }}
+                            {% if form.message.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.message.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit mt-6">
+                        <span>Envoyer le message</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+
+            <!-- CONTACT INFO -->
+            <div class="animate-fade-in delay-500">
+                <div class="contact-card p-8 lg:p-10">
+                    <h2 class="text-3xl font-extrabold text-[var(--primary)] mb-8">
+                        Nos coordonnées
+                    </h2>
+
+                    <div class="space-y-6">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            </div>
+                            <div class="info-content">
+                                <h4>Adresse</h4>
+                                <p>Immeuble AISE, Avenue de la République<br>1002 Tunis, Tunisie</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                            </div>
+                            <div class="info-content">
+                                <h4>Téléphone</h4>
+                                <p><a href="tel:+21671234567">+216 71 234 567</a></p>
+                                <p><a href="tel:+21698234567">+216 98 234 567</a> (Mobile)</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            </div>
+                            <div class="info-content">
+                                <h4>Email</h4>
+                                <p><a href="mailto:contact@aise.tn">contact@aise.tn</a></p>
+                                <p><a href="mailto:partenariats@aise.tn">partenariats@aise.tn</a></p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93s3.06-7.44 7-7.93V15l5-3-5-3v8.93z"/></svg>
+                            </div>
+                            <div class="info-content">
+                                <h4>Horaires</h4>
+                                <p>Lundi – Vendredi : 8h30 – 17h30<br>Samedi : 9h00 – 13h00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="mt-10">
+                        <h4 class="text-lg font-bold text-[var(--primary)] mb-4">Suivez-nous</h4>
+                        <div class="social-links">
+                            <a href="#" class="social-link" aria-label="LinkedIn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                            </a>
+                            <a href="#" class="social-link" aria-label="Facebook">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.09 2 2.1 6.04 2.1 12c0 5.51 4.03 10.08 9.3 10.86v-7.67h-2.8v-3.19h2.8v-2.43c0-2.78 1.67-4.31 4.16-4.31.9 0 1.87.16 2.81.47v3.08h-1.58c-1.56 0-2.04.97-2.04 1.96v2.35h3.47l-.55 3.19h-2.92v7.67c5.27-.78 9.3-5.35 9.3-10.86C21.98 6.04 17.99 2 12.04 2z"/></svg>
+                            </a>
+                            <a href="#" class="social-link" aria-label="Instagram">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5m0 2c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Google Maps -->
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3192.693740836355!2d10.181531615245!3d36.818811979946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12fd34a92d3c2b6d%3A0x5e8f7a2e8f8b8c8d!2sTunis%2C%20Tunisie!5e0!3m2!1sfr!2stn!4v1698765432100!5m2!1sfr!2stn" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
