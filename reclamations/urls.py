@@ -11,4 +11,5 @@ urlpatterns = [
     # === Backoffice ===
     path('', views.backoffice_reclamations, name='backoffice_reclamations'),
     path('<int:reclamation_id>/', views.backoffice_reclamation_detail, name='backoffice_reclamation_detail'),
+    path('generate-response/', views.generate_reclamation_response, name='generate_response'),
 ]
