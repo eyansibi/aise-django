@@ -13,8 +13,6 @@ load_dotenv()  # Charge .env
 GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')  # Vide par défaut
 
 
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

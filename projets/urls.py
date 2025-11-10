@@ -13,6 +13,7 @@ urlpatterns = [
     # === Frontoffice (public) ===
     path('public/', views.projets_list_public, name='projets_public'),
     path('public/<int:projet_id>/', views.projet_detail_public, name='projet_detail_public'),
+    path('generate-description/', views.generate_projet_description, name='generate_description'),
 
     
 ]
