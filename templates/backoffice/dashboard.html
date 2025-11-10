@@ -1,16 +1,17 @@
 {% extends "backoffice/base.html" %}
 {% load static %}
+
 {% block page_title %}Tableau de bord{% endblock %}
 
 {% block content %}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <!-- Carte Stat 1 -->
+    <!-- Carte 1: Utilisateurs -->
     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-600">Utilisateurs</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">1,234</p>
-                <p class="text-xs text-green-600 mt-2">+12% ce mois</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">{{ total_users }}</p>
+                <p class="text-xs text-green-600 mt-2">{{ users_growth }} ce mois</p>
             </div>
             <div class="p-3 bg-blue-100 rounded-full">
                 <i class="fas fa-users text-blue-600 text-xl"></i>
@@ -18,13 +19,13 @@
         </div>
     </div>
 
-    <!-- Carte Stat 2 -->
+    <!-- Carte 2: Projets actifs -->
     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-600">Projets actifs</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">89</p>
-                <p class="text-xs text-green-600 mt-2">+5 nouveaux</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">{{ projets_actifs }}</p>
+                <p class="text-xs text-green-600 mt-2">{{ nouveaux_projets }} nouveaux</p>
             </div>
             <div class="p-3 bg-green-100 rounded-full">
                 <i class="fas fa-folder-open text-green-600 text-xl"></i>
@@ -32,13 +33,13 @@
         </div>
     </div>
 
-    <!-- Carte Stat 3 -->
+    <!-- Carte 3: Réclamations -->
     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-600">Réclamations</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">23</p>
-                <p class="text-xs text-orange-600 mt-2">3 en attente</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">{{ total_reclamations }}</p>
+                <p class="text-xs text-orange-600 mt-2">{{ reclamations_en_attente }} en attente</p>
             </div>
             <div class="p-3 bg-orange-100 rounded-full">
                 <i class="fas fa-envelope text-orange-600 text-xl"></i>
@@ -46,13 +47,13 @@
         </div>
     </div>
 
-    <!-- Carte Stat 4 -->
+    <!-- Carte 4: Articles publiés -->
     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-600">Articles publiés</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">156</p>
-                <p class="text-xs text-green-600 mt-2">+18 ce mois</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">{{ total_blogs }}</p>
+                <p class="text-xs text-green-600 mt-2">{{ blogs_this_month }} ce mois</p>
             </div>
             <div class="p-3 bg-purple-100 rounded-full">
                 <i class="fas fa-newspaper text-purple-600 text-xl"></i>
@@ -61,8 +62,8 @@
     </div>
 </div>
 
-<!-- Section raccourcis -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- === RACCOURCIS === -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <a href="{% url 'users:backoffice_users' %}" 
        class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
         <div class="flex items-center justify-between">
@@ -74,7 +75,7 @@
         </div>
     </a>
 
-    <a href="#" 
+    <a href="{% url 'projets:backoffice_projets' %}" 
        class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
         <div class="flex items-center justify-between">
             <div>
@@ -85,7 +86,7 @@
         </div>
     </a>
 
-    <a href="#" 
+    <a href="{% url 'blogs:backoffice_blogs' %}" 
        class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
         <div class="flex items-center justify-between">
             <div>
@@ -97,22 +98,18 @@
     </a>
 </div>
 
-<!-- Activité récente (optionnel) -->
-<div class="mt-10 bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+<!-- === ACTIVITÉ RÉCENTE === -->
+<div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
     <h3 class="text-lg font-semibold text-gray-800 mb-4">Activité récente</h3>
     <ul class="space-y-3 text-sm text-gray-600">
+        {% for activity in recent_activity %}
         <li class="flex items-center gap-3">
-            <i class="fas fa-user-plus text-green-500"></i>
-            <span>Nouvel admin <strong>jean.dupont</strong> ajouté il y a 2h</span>
+            <i class="fas {{ activity.icon }} {{ activity.color }}"></i>
+            <span>{{ activity.text|safe }} <span class="text-gray-400">il y a {{ activity.time }}</span></span>
         </li>
-        <li class="flex items-center gap-3">
-            <i class="fas fa-edit text-blue-500"></i>
-            <span>Projet <strong>#128</strong> mis à jour</span>
-        </li>
-        <li class="flex items-center gap-3">
-            <i class="fas fa-envelope text-orange-500"></i>
-            <span>Nouvelle réclamation reçue</span>
-        </li>
+        {% empty %}
+        <li class="text-gray-500">Aucune activité récente.</li>
+        {% endfor %}
     </ul>
 </div>
 {% endblock %}
