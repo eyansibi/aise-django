@@ -5,6 +5,12 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from .models import Blog
 from .forms import BlogForm
+from groq import Groq
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_http_methods
+import json
 
 # === BACKOFFICE ===
 @staff_member_required(login_url='users:login')
@@ -69,3 +75,62 @@ def blog_detail_public(request, blog_id):
         'blog': blog,
         'page_title': blog.titre
     })
+
+@csrf_protect
+@require_http_methods(["POST"])
+def generate_blog_content(request):
+    client = Groq(api_key=settings.GROQ_API_KEY)
+
+    try:
+        data = json.loads(request.body)
+        titre = data.get('titre', '').strip()
+        theme = data.get('theme', 'innovation').strip()
+        ton = data.get('ton', 'professionnel').strip()
+        longueur = data.get('longueur', 'moyen')  # court, moyen, long
+
+        if not titre:
+            return JsonResponse({'error': 'Titre requis'}, status=400)
+
+        # Ajuste la longueur
+        mots = {'court': 200, 'moyen': 400, 'long': 600}.get(longueur, 400)
+
+        prompt = f"""
+        Génère 3 articles de blog complets en français.
+        Chaque article doit avoir :
+        - Un titre accrocheur
+        - Un contenu structuré (introduction, 2-3 sections, conclusion)
+        - {mots} mots environ
+        Thème : {theme}
+        Ton : {ton}
+        Sujet principal : {titre}
+
+        Sépare chaque article par '---ARTICLE---'
+        Format : 
+        **Titre :** ...
+        **Contenu :** ...
+        """
+
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.8,
+            max_tokens=1500,
+        )
+
+        raw = response.choices[0].message.content
+        articles = []
+        for part in raw.split('---ARTICLE---'):
+            if 'Titre :' in part and 'Contenu :' in part:
+                try:
+                    titre_part = part.split('Titre :')[1].split('Contenu :')[0].strip()
+                    contenu_part = part.split('Contenu :')[1].strip()
+                    articles.append({
+                        'titre': titre_part,
+                        'contenu': contenu_part
+                    })
+                except:
+                    continue
+        return JsonResponse({'articles': articles[:3]})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
