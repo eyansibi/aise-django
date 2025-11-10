@@ -5,10 +5,12 @@ Généré pour Django 5.2.x
 """
 
 import os
+import logging
 from pathlib import Path
 
 from dotenv import load_dotenv
 load_dotenv()  # Charge .env
+
 
 GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')  # Vide par défaut
 
@@ -21,6 +23,20 @@ SECRET_KEY = 'django-insecure-your-secret-key'  # à remplacer en prod
 DEBUG = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler'},
+    },
+    'loggers': {
+        'reclamations.views': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
+}
 # ------------------ Applications ------------------
 INSTALLED_APPS = [
     # Apps Django
