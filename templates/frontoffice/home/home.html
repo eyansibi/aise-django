@@ -4,327 +4,408 @@
 {% block title %}AISE - Cabinet de communication institutionnelle{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #0066cc;
-            --text: #1a1a1a;
-            --light: #f5f5f5;
-            --gray: #666;
-            --border: #e5e5e5;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; color: var(--text); line-height: 1.7; background: #fff; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        section { padding: 100px 0; }
-        h1, h2, h3 { font-weight: 600; letter-spacing: -0.5px; }
-        h1 { font-size: 3.2rem; margin-bottom: 1.5rem; }
-        h2 { font-size: 2.4rem; margin-bottom: 1.2rem; }
-        p { margin-bottom: 1.5rem; color: var(--gray); }
+<!-- ====================== CUSTOM CSS ====================== -->
+<style>
+    /* === ANIMATIONS === */
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slide-up {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
 
-        /* Hero */
-        .hero {
-            text-align: center;
-            padding: 140px 0 100px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        }
-        .hero .tagline {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: var(--primary);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-        }
-        .hero h1 {
-            font-size: 3.8rem;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-        }
-        .hero p {
-            font-size: 1.3rem;
-            max-width: 700px;
-            margin: 0 auto 2rem;
-            color: var(--gray);
-        }
+    .animate-fade-in { animation: fade-in 0.8s ease-out forwards; opacity: 0; }
+    .animate-slide-up { animation: slide-up 0.9s ease-out forwards; opacity: 0; }
+    .animate-pulse { animation: pulse 6s ease-in-out infinite; }
+    .animate-bounce { animation: bounce 2s ease-in-out infinite; }
 
-        /* Section Title */
-        .section-title {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-        .section-title h2 {
-            font-size: 2.8rem;
-            position: relative;
-            display: inline-block;
-        }
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: var(--primary);
-        }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-500 { animation-delay: 0.5s; }
+    .delay-1000 { animation-delay: 1s; }
 
-        /* Expertise Grid */
-        .expertise-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-            margin-top: 3rem;
-        }
-        .expertise-card {
-            background: #fff;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-        .expertise-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .icon-wrapper {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1.5rem;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .icon-wrapper svg {
-            width: 40px;
-            height: 40px;
-            fill: white;
-        }
-        .expertise-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text);
-        }
+    /* === HERO === */
+    .hero {
+        position: relative;
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #f0f5f3 100%);
+    }
+    .hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 20% 80%, rgba(8, 112, 101, 0.06) 0%, transparent 60%);
+        pointer-events: none;
+    }
 
-        /* FAQ */
-        .faq {
-            background: var(--light);
-        }
-        .faq-item {
-            margin-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 1.5rem;
-        }
-        .faq-item h3 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            color: var(--text);
-        }
-        .faq-item ul {
-            margin-left: 1.5rem;
-            margin-top: 1rem;
-        }
-        .faq-item li {
-            margin-bottom: 0.5rem;
-            position: relative;
-        }
-        .faq-item li::before {
-            content: "•";
-            color: var(--primary);
-            font-weight: bold;
-            position: absolute;
-            left: -1.5rem;
-        }
+    .btn-primary, .btn-secondary {
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 1rem 2rem;
+        border-radius: 9999px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 10px 25px rgba(8, 112, 101, 0.3);
+    }
+    .btn-primary:hover {
+        background: #065a52;
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(8, 112, 101, 0.4);
+    }
+    .btn-secondary {
+        background: white;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .btn-secondary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-3px);
+    }
 
-        /* CTA */
-        .cta {
-            text-align: center;
-            padding: 80px 0;
-            background: linear-gradient(135deg, var(--primary) 0%, #0052a3 100%);
-            color: white;
-            border-radius: 20px;
-            margin: 3rem 0;
-        }
-        .cta h2 {
-            color: white;
-            margin-bottom: 1rem;
-        }
-        .cta p {
-            color: rgba(255,255,255,0.9);
-            max-width: 700px;
-            margin: 0 auto 2rem;
-        }
-        .btn {
-            display: inline-block;
-            background: white;
-            color: var(--primary);
-            padding: 14px 32px;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
+    /* === SECTIONS === */
+    .section-title h2 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary);
+        position: relative;
+        display: inline-block;
+    }
+    .section-title h2::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--secondary);
+        border-radius: 2px;
+    }
 
-        @media (max-width: 768px) {
-            h1 { font-size: 2.8rem; }
-            .hero h1 { font-size: 3rem; }
-            section { padding: 70px 0; }
-        }
-    </style>
-</head>
-<body>
+    /* === CARTES PRO === */
+    .expertise-card {
+        position: relative;
+        background: white;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        border: 1px solid #e5e7eb;
+        transition: all 0.5s ease;
+        height: 100%;
+    }
+    .expertise-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    }
+    .expertise-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(8,112,101,0.05) 0%, transparent 100%);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+    .expertise-card:hover::before {
+        opacity: 1;
+    }
+    .icon-wrapper {
+        width: 96px;
+        height: 96px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--primary), #065a52);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 25px rgba(8,112,101,0.3);
+        transition: all 0.4s ease;
+    }
+    .expertise-card:hover .icon-wrapper {
+        background: var(--secondary);
+        transform: scale(1.1);
+        box-shadow: 0 15px 35px rgba(244,202,35,0.4);
+    }
+    .icon-wrapper svg {
+        width: 48px;
+        height: 48px;
+        fill: white;
+    }
+    .expertise-card h3 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+    .underline-animation {
+        height: 4px;
+        width: 60px;
+        background: var(--secondary);
+        margin: 1.5rem auto 0;
+        border-radius: 2px;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+    }
+    .expertise-card:hover .underline-animation {
+        transform: scaleX(1);
+    }
 
-<!-- Hero Section -->
+    /* === FAQ & CTA – 100% LARGEUR === */
+    .full-width {
+        width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    @media (min-width: 768px) { .full-width { padding-left: 2rem; padding-right: 2rem; } }
+    @media (min-width: 1024px) { .full-width { padding-left: 3rem; padding-right: 3rem; } }
+    @media (min-width: 1280px) { .full-width { padding-left: 4rem; padding-right: 4rem; } }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+        .hero { min-height: 80vh; padding: 6rem 0; }
+        .hero h1 { font-size: 3.2rem; }
+        .hero .tagline { font-size: 0.875rem; }
+        .hero p { font-size: 1.1rem; }
+        .section-title h2 { font-size: 2.4rem; }
+        .expertise-card h3 { font-size: 1.5rem; }
+        .faq-item h3 { font-size: 1.35rem; }
+        .cta h2 { font-size: 2.3rem; }
+        .btn-primary, .btn-secondary { padding: 0.875rem 1.5rem; font-size: 1rem; }
+    }
+</style>
+
+<!-- ====================== HERO SECTION ====================== -->
 <section class="hero">
-    <div class="container">
-        <p class="tagline">« Donner du sens avant de donner la parole. »</p>
-        <h1>Transformons vos idées en stratégies gagnantes</h1>
-        <p>
-            Nous vous accompagnons dans la conception, le déploiement et l’optimisation de vos stratégies de communication 
-            pour maximiser votre visibilité et renforcer votre image de marque.
-        </p>
+    <div class="absolute inset-0 opacity-25">
+        <img src="{% static 'images/pexels-mikhail-nilov-7988667.jpg' %}" 
+             alt="Équipe AISE en réunion stratégique" 
+             class="w-full h-full object-cover">
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[var(--primary)]/30 via-transparent to-transparent"></div>
+
+    <div class="absolute top-20 left-10 w-72 h-72 bg-[var(--secondary)]/10 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-[var(--primary)]/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+
+    <div class="container relative z-10">
+        <div class="max-w-5xl mx-auto text-center">
+            <p class="tagline text-[var(--secondary)] font-bold tracking-widest uppercase mb-6 animate-fade-in">
+                « Donner du sens avant de donner la parole. »
+            </p>
+
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[var(--primary)] leading-tight mb-8 animate-slide-up">
+                Transformons vos idées<br>
+                <span class="text-[var(--secondary)]">en stratégies gagnantes</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-10 leading-relaxed animate-fade-in delay-300">
+                Nous vous accompagnons dans la conception, le déploiement et l’optimisation de vos stratégies de communication 
+                pour <strong>maximiser votre visibilité</strong> et <strong>renforcer votre image de marque</strong>.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in delay-500">
+                <a href="{% url 'reclamations:reclamation_public' %}" class="btn-primary">
+                    <span>Nous contacter</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="#qui-sommes-nous" class="btn-secondary">
+                    <span>Découvrir AISE</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <svg class="w-6 h-6 text-[var(--primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+        </svg>
     </div>
 </section>
 
-<!-- About -->
-<section>
+<!-- ====================== QUI SOMMES-NOUS ====================== -->
+<section id="qui-sommes-nous" class="py-20 bg-white">
     <div class="container">
-        <div class="section-title">
-            <h2>AISE – Cabinet de communication institutionnelle</h2>
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-[var(--primary)]">
+                AISE – Cabinet de communication institutionnelle
+            </h2>
+            <span class="block w-24 h-1 bg-[var(--secondary)] mx-auto mt-4 rounded-full"></span>
         </div>
-        <p style="text-align:center; max-width:800px; margin:0 auto 3rem;">
+
+        <p class="text-center max-w-4xl mx-auto text-lg leading-relaxed mb-16 text-gray-700">
             AISE est un cabinet de conseil spécialisé en communication institutionnelle, qui accompagne les organisations 
             publiques, privées et internationales dans la définition et la mise en œuvre de stratégies de communication 
             à forte valeur ajoutée.
         </p>
 
-        <!-- Expertise Grid -->
-        <div class="expertise-grid">
-            <div class="expertise-card">
-                <div class="icon-wrapper">
-                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/></svg>
+        <!-- === CARTES PRO === -->
+        <div id="expertises" class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+            <!-- Card 1 -->
+            <div class="expertise-card group">
+                <div class="p-8 text-center relative z-10">
+                    <div class="icon-wrapper">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/></svg>
+                    </div>
+                    <h3>Clarté</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Rendre les messages institutionnels <strong>accessibles</strong>, <strong>cohérents</strong> et <strong>pertinents</strong> pour tous les publics.
+                    </p>
+                    <div class="underline-animation"></div>
                 </div>
-                <h3>Clarté</h3>
-                <p>Rendre les messages institutionnels accessibles, cohérents et pertinents.</p>
             </div>
-            <div class="expertise-card">
-                <div class="icon-wrapper">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L7 14.17l7.59-7.59L16 8l-6 6z"/></svg>
+
+            <!-- Card 2 -->
+            <div class="expertise-card group">
+                <div class="p-8 text-center relative z-10">
+                    <div class="icon-wrapper">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L7 14.17l7.59-7.59L16 8l-6 6z"/></svg>
+                    </div>
+                    <h3>Crédibilité</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Renforcer la <strong>légitimité</strong> des institutions à travers des <strong>récits solides</strong>, <strong>documentés</strong> et <strong>authentiques</strong>.
+                    </p>
+                    <div class="underline-animation"></div>
                 </div>
-                <h3>Crédibilité</h3>
-                <p>Renforcer la légitimité des institutions à travers des récits solides et documentés.</p>
             </div>
-            <div class="expertise-card">
-                <div class="icon-wrapper">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+
+            <!-- Card 3 -->
+            <div class="expertise-card group">
+                <div class="p-8 text-center relative z-10">
+                    <div class="icon-wrapper">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    </div>
+                    <h3>Rayonnement</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Déployer des stratégies de <strong>visibilité</strong> et d’<strong>influence</strong> à l’échelle <strong>locale</strong>, <strong>régionale</strong> et <strong>internationale</strong>.
+                    </p>
+                    <div class="underline-animation"></div>
                 </div>
-                <h3>Rayonnement</h3>
-                <p>Déployer des stratégies de visibilité et d’influence à l’échelle locale, régionale et internationale.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- FAQ -->
-<section class="faq">
-    <div class="container">
-        <div class="section-title">
-            <h2>Foire Aux Questions</h2>
+<!-- ====================== FAQ – 100% LARGEUR ====================== -->
+<section class="faq bg-[#f8f9fa] py-24">
+    <div class="full-width">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-[var(--primary)] relative inline-block">
+                Foire Aux Questions
+                <span class="block w-24 h-1 bg-[var(--secondary)] mx-auto mt-4 rounded-full"></span>
+            </h2>
         </div>
 
-        <div class="faq-item">
-            <h3>Travailler avec AISE</h3>
-            <p>
-                AISE ne se limite pas à la production de contenus ou de visuels. Nous intervenons sur la stratégie globale 
-                de communication institutionnelle, en aidant les organisations à aligner leur image, leur culture interne 
-                et leurs objectifs d’impact. Chaque projet s’accompagne d’un travail de diagnostic, de positionnement et 
-                d’évaluation, garantissant une cohérence entre discours et réalité.
-            </p>
-            <p><strong>Nous travaillons avec un large éventail d’acteurs :</strong></p>
-            <ul>
-                <li>Entreprises nationales et multinationales,</li>
-                <li>Institutions publiques,</li>
-                <li>Organisations internationales et ONG,</li>
-                <li>Projets de coopération et acteurs de la société civile.</li>
-            </ul>
-            <p style="margin-top:1.5rem;">
-                AISE adapte ses méthodes à la maturité communicationnelle de chaque structure, du niveau local au niveau stratégique.
-            </p>
-        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+            <div class="bg-white p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <h3 class="text-2xl font-bold text-[var(--primary)] mb-5 flex items-center gap-3">
+                    <span class="w-2 h-2 bg-[var(--secondary)] rounded-full"></span>
+                    Travailler avec AISE
+                </h3>
+                <p class="text-lg text-gray-700 leading-relaxed mb-5">
+                    AISE intervient sur la stratégie globale de communication institutionnelle, en alignant image, culture interne et objectifs d’impact.
+                </p>
+                <p class="text-base font-semibold text-[var(--primary)] mb-3">Nous travaillons avec :</p>
+                <ul class="space-y-2 text-gray-700 text-base">
+                    <li class="flex items-center gap-2"><span class="text-[var(--secondary)]">•</span> Entreprises nationales et multinationales</li>
+                    <li class="flex items-center gap-2"><span class="text-[var(--secondary)]">•</span> Institutions publiques</li>
+                    <li class="flex items-center gap-2"><span class="text-[var(--secondary)]">•</span> Organisations internationales et ONG</li>
+                    <li class="flex items-center gap-2"><span class="text-[var(--secondary)]">•</span> Projets de coopération et société civile</li>
+                </ul>
+            </div>
 
-        <div class="faq-item">
-            <h3>Nos interventions permettent à nos partenaires de :</h3>
-            <ul>
-                <li>Structurer une communication claire et crédible</li>
-                <li>Valoriser leur RSE et leur impact social ;</li>
-                <li>Améliorer la cohésion interne et la culture d’entreprise</li>
-                <li>Renforcer la visibilité institutionnelle auprès des partenaires et bailleurs</li>
-                <li>Obtenir des outils et référentiels durables pour piloter leur communication à long terme.</li>
-            </ul>
-        </div>
-
-        <div class="faq-item">
-            <p>
-                <strong>Chaque mission suit une démarche éprouvée :</strong>
-            </p>
-            <ol style="margin-left:1.5rem; margin-top:1rem;">
-                <li><strong>Diagnostic stratégique :</strong> compréhension du contexte, des enjeux et des besoins.</li>
-                <li><strong>Co-construction :</strong> ateliers participatifs et alignement sur les messages clés.</li>
-                <li><strong>Déploiement opérationnel :</strong> production, accompagnement et diffusion.</li>
-                <li><strong>Suivi et évaluation :</strong> mesure d’impact, restitution et plan d’amélioration.</li>
-            </ol>
-            <p style="margin-top:1.5rem;">
-                Cette approche garantit des livrables concrets et une appropriation durable par les équipes.
-            </p>
-            <p>
-                Chaque projet est conçu à partir d’un brief personnalisé et d’un diagnostic préalable, afin de proposer 
-                des solutions adaptées à la réalité du client : communication interne, marque employeur, stratégie 
-                institutionnelle, RSE, ou communication digitale.
-            </p>
-        </div>
-
-        <div class="faq-item">
-            <h3>Expertise et valeur ajoutée</h3>
-            <p>
-                AISE aide les organisations à transformer leurs engagements RSE en récits crédibles et mesurables. 
-                Nous accompagnons la structuration de politiques RSE, la communication des impacts, et la conception 
-                de campagnes qui valorisent les initiatives sans tomber dans le “greenwashing”.
-            </p>
-            <p style="margin-top:1.5rem;">
-                AISE fait partie des premiers cabinets en Tunisie à intégrer l’IA au cœur de ses services. 
-                Nous proposons des packs de communication sur mesure, conçus à partir des outils IA les plus performants 
-                du marché. Résultat : une exécution rapide, des stratégies précises, et une créativité amplifiée. 
-                Avec AISE, l’IA devient un atout concret pour des campagnes plus efficaces, cohérentes et durables.
-            </p>
+            <div class="bg-white p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <h3 class="text-2xl font-bold text-[var(--primary)] mb-5 flex items-center gap-3">
+                    <span class="w-2 h-2 bg-[var(--secondary)] rounded-full"></span>
+                    Expertise et valeur ajoutée
+                </h3>
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    AISE intègre l’<strong>intelligence artificielle</strong> au cœur de ses services. Nous proposons des packs de communication sur mesure, conçus avec les outils IA les plus performants pour analyser, prédire et optimiser vos stratégies.
+                </p>
+                <div class="mt-6 p-4 bg-gradient-to-r from-[var(--primary)]/5 to-[var(--secondary)]/5 rounded-xl border border-[var(--primary)]/10">
+                    <p class="text-sm font-medium text-[var(--primary)]">
+                        <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                        <strong>IA + Stratégie = Résultats mesurables</strong>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- CTA -->
-<section>
-    <div class="container">
-        <div class="cta">
-            <h2>Prêt à transformer votre communication ?</h2>
-            <p>Contactez-nous dès aujourd'hui pour un diagnostic gratuit de votre stratégie institutionnelle.</p>
-            <a href="{% url 'contact' %}" class="btn">Nous contacter</a>
+<!-- ====================== CTA – 100% LARGEUR ====================== -->
+<section class="py-24 bg-gradient-to-br from-[var(--primary)] to-[#065a52] relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-[var(--secondary)] rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+    </div>
+
+    <div class="full-width relative z-10">
+        <div class="text-center">
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
+                Prêt à transformer<br>
+                <span class="text-[var(--secondary)]">votre communication ?</span>
+            </h2>
+            <p class="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto mb-10 leading-relaxed">
+                Contactez-nous dès aujourd'hui pour un <strong>diagnostic gratuit</strong> de votre stratégie institutionnelle.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <a href="{% url 'reclamations:reclamation_public' %}" 
+                   class="group inline-flex items-center gap-4 px-10 py-5 bg-[var(--secondary)] text-[var(--primary)] font-bold text-lg rounded-full hover:bg-white transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
+                    <span>Demander un diagnostic gratuit</span>
+                    <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="tel:+21671234567" 
+                   class="inline-flex items-center gap-3 px-8 py-5 bg-white/10 backdrop-blur-sm text-white font-semibold text-lg rounded-full border-2 border-white/30 hover:bg-white/20 transition-all duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                    </svg>
+                    <span>+216 71 234 567</span>
+                </a>
+            </div>
+
+            <div class="mt-12 flex flex-wrap justify-center gap-8 text-white/70 text-sm">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[var(--secondary)]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>Diagnostic gratuit</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[var(--secondary)]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>Réponse sous 24h</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[var(--secondary)]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>Équipe certifiée</span>
+                </div>
+            </div>
         </div>
     </div>
 </section>
-
-</body>
-</html>
 {% endblock %}
