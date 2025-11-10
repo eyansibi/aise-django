@@ -4,86 +4,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}AISE{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{% block title %}AISE - Communication Institutionnelle{% endblock %}</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary: #087065;
+            --secondary: #F4CA23;
+            --text-light: #FFFFFF;
+            --text-dark: #1A1A1A;
+            --gray: #666666;
+            --light: #F8FAFB;
+            --border: #E5E5E5;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background: #fff;
+            line-height: 1.7;
+        }
 
-        <header class="bg-white shadow-sm border-b border-gray-100">
-        <div class="container mx-auto px-4 py-5">
+        /* === LARGEUR ÉLARGIE === */
+        .container {
+            max-width: 1400px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        @media (min-width: 1600px) {
+            .container { width: 85%; max-width: 1600px; }
+        }
+        @media (max-width: 768px) {
+            .container { width: 100%; padding: 0 1.5rem; }
+        }
+
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .header.scrolled {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .logo {
+            font-weight: 800;
+            font-size: 2rem; /* + Grand */
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+        .nav-link {
+            position: relative;
+            color: var(--gray);
+            font-weight: 600; /* Plus épais */
+            font-size: 1.05rem; /* + Grand */
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 3px; /* Ligne plus épaisse */
+            background: var(--secondary);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .btn-contact {
+            background: var(--secondary);
+            color: var(--primary);
+            font-weight: 700;
+            padding: 0.85rem 1.8rem; /* Bouton plus grand */
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(244, 202, 35, 0.3);
+            font-size: 1.05rem; /* Texte + grand */
+        }
+        .btn-contact:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(244, 202, 35, 0.4);
+            background: #f0c11a;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary);
+            color: var(--text-light);
+            padding: 5rem 0 2.5rem; /* Plus d’espace */
+            margin-top: 5rem;
+            font-size: 1.05rem; /* Texte + grand */
+        }
+        .footer h3 {
+            color: var(--secondary);
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            font-size: 1.3rem; /* Titre + grand */
+        }
+        .footer a {
+            color: rgba(255,255,255,0.85);
+            transition: color 0.3s ease;
+            display: block;
+            margin-bottom: 0.7rem;
+            font-size: 1.05rem; /* Liens + grands */
+            font-weight: 500;
+        }
+        .footer a:hover {
+            color: var(--secondary);
+        }
+        .footer .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            margin-right: 0.6rem;
+            transition: all 0.3s ease;
+        }
+        .footer .social-icons a:hover {
+            background: var(--secondary);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+        .footer .copyright {
+            border-top: 1px solid rgba(255,255,255,0.15);
+            padding-top: 2rem;
+            margin-top: 2.5rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* Messages */
+        .message {
+            padding: 1.2rem 1.8rem;
+            border-radius: 14px;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            border: 1px solid;
+            font-size: 1.05rem;
+        }
+        .message-success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        .message-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        /* Mobile Menu */
+        @media (max-width: 768px) {
+            .nav-desktop { display: none; }
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 48px;
+                background: var(--light);
+                border-radius: 50%;
+                cursor: pointer;
+            }
+            .mobile-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 320px;
+                height: 100vh;
+                background: white;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+                transition: right 0.4s ease;
+                padding: 6rem 2rem 2rem;
+                z-index: 2000;
+            }
+            .mobile-menu.open { right: 0; }
+            .mobile-menu a {
+                display: block;
+                padding: 1.2rem 0;
+                font-weight: 600;
+                color: var(--text-dark);
+                border-bottom: 1px solid var(--border);
+                font-size: 1.1rem; /* + Grand sur mobile */
+            }
+            .mobile-menu a:last-child { border: none; }
+        }
+        @media (min-width: 769px) {
+            .mobile-menu-btn, .mobile-menu { display: none; }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container mx-auto px-4 py-6">
             <div class="flex justify-between items-center">
                 <!-- Logo -->
-                <a href="{% url 'home' %}" class="text-2xl font-bold text-blue-600 hover:text-blue-700 transition">
-                    AISE
-                </a>
+                <a href="{% url 'home' %}" class="logo">AISE</a>
 
-                <!-- Navigation -->
-                <nav>
-                    <ul class="flex space-x-8 items-center text-sm font-medium">
+                <!-- Desktop Nav -->
+                <nav class="nav-desktop">
+                    <ul class="flex space-x-10 items-center">
+                        <li><a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Accueil</a></li>
+                        <li><a href="#qui-sommes-nous" class="nav-link">Qui sommes-nous</a></li>
+                        <li><a href="#expertises" class="nav-link">Expertises</a></li>
+                        <li><a href="{% url 'blogs:blogs_public' %}" class="nav-link">La voix d'AISE</a></li>
+                        <li><a href="{% url 'projets:projets_public' %}" class="nav-link">Projets</a></li>
                         <li>
-                            <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 transition {% if request.resolver_match.url_name == 'home' %}text-blue-600 font-semibold{% endif %}">
-                                Bienvenue
-                            </a>
-                        </li>
-                        
-                        <li>
-                            <a href="#qui-sommes-nous" class="text-gray-700 hover:text-blue-600 transition">
-                                Qui sommes-nous
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#expertises" class="text-gray-700 hover:text-blue-600 transition">
-                                Nos expertises
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'blogs:blogs_public' %}" class="text-gray-700 hover:text-blue-600 transition">
-                                La voix d'AISE
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'projets:projets_public' %}" class="text-gray-700 hover:text-blue-600 transition">
-                                Projets
-                            </a>
-                        </li>
-
-                        <!-- Bouton Contact -->
-                        <li>
-                            <a href="{% url 'reclamations:reclamation_public' %}" class="bg-blue-600 text-white px-5 py-2.5 rounded-full hover:bg-blue-700 transition font-medium text-sm">
+                            <a href="{% url 'reclamations:reclamation_public' %}" class="btn-contact">
                                 Contact
                             </a>
                         </li>
                     </ul>
                 </nav>
 
-                <!-- Auth (mobile ou petit écran) -->
-                <div class="md:hidden">
-                    {% if user.is_authenticated %}
-                        <span class="text-sm text-gray-600">Bonjour, {{ user.username }}</span>
-                    {% endif %}
+                <!-- Mobile Menu Button -->
+                <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow container mx-auto px-4 py-8">
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="{% url 'home' %}">Accueil</a>
+        <a href="#qui-sommes-nous">Qui sommes-nous</a>
+        <a href="#expertises">Expertises</a>
+        <a href="{% url 'blogs:blogs_public' %}">La voix d'AISE</a>
+        <a href="{% url 'projets:projets_public' %}">Projets</a>
+        <a href="{% url 'reclamations:reclamation_public' %}" class="btn-contact inline-block text-center mt-6 w-full">Contact</a>
+    </div>
+
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-1000 hidden" id="overlay" onclick="closeMobileMenu()"></div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
         <!-- Messages -->
         {% if messages %}
-            <div class="mb-6">
-                {% for message in messages %}
-                    <div class="p-4 rounded-lg mb-2 {% if message.tags == 'error' %}bg-red-100 text-red-700 border border-red-300{% else %}bg-green-100 text-green-700 border border-green-300{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+            <div class="container mx-auto px-4 pt-8">
+                <div class="space-y-3">
+                    {% for message in messages %}
+                        <div class="message {% if message.tags == 'error' %}message-error{% else %}message-success{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         {% endif %}
 
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-gray-800 text-white text-center py-4 mt-auto">
-        <p>© 2025 AISE - Tous droits réservés</p>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 text-center md:text-left">
+                <div>
+                    <h3 class="text-2.5xl font-bold">AISE</h3>
+                    <p class="opacity-90 mt-3 leading-relaxed">
+                        Cabinet de communication institutionnelle d'excellence.
+                    </p>
+                </div>
+                <div>
+                    <h3>Navigation</h3>
+                    <a href="{% url 'home' %}">Accueil</a>
+                    <a href="#qui-sommes-nous">Qui sommes-nous</a>
+                    <a href="#expertises">Expertises</a>
+                    <a href="{% url 'blogs:blogs_public' %}">Blog</a>
+                </div>
+                <div>
+                    <h3>Contact</h3>
+                    <a href="mailto:contact@aise.tn">contact@aise.tn</a>
+                    <a href="tel:+21671234567">+216 71 234 567</a>
+                    <p class="mt-3 opacity-85">Tunis, Tunisie</p>
+                </div>
+                <div>
+                    <h3>Réseaux</h3>
+                    <div class="social-icons mt-3">
+                        <a href="#" aria-label="LinkedIn">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-.139 9.237c.209 4.617-3.234 9.765-9.33 9.765-1.854 0-3.579-.543-5.032-1.475 1.742.205 3.48-.278 4.86-1.359-1.437-.027-2.649-.976-3.066-2.28.515.098 1.021.069 1.482-.056-1.579-.317-2.668-1.739-2.633-3.26.442.246.929.396 1.454.415-.913-.614-1.493-1.667-1.493-2.856 0-.623.168-1.207.462-1.708 1.693 2.08 4.225 3.451 7.08 3.594-.058-.249-.09-.51-.09-.78 0-1.879 1.525-3.404 3.404-3.404.977 0 1.857.413 2.476 1.074.773-.152 1.498-.435 2.156-.828-.254.794-.793 1.46-1.494 1.88.686-.083 1.34-.269 1.95-.544-.453.677-1.026 1.272-1.692 1.794z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright text-center">
+                © 2025 AISE. Tous droits réservés. | Fait avec passion en Tunisie
+            </div>
+        </div>
     </footer>
+
+    <!-- Scripts -->
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const overlay = document.getElementById('overlay');
+            menu.classList.toggle('open');
+            overlay.classList.toggle('hidden');
+        }
+        function closeMobileMenu() {
+            document.getElementById('mobileMenu').classList.remove('open');
+            document.getElementById('overlay').classList.add('hidden');
+        }
+
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>
