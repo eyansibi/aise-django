@@ -9,3 +9,4 @@ crispy-bootstrap5==0.7
 django-import-export
 openpyxl
 reportlab
+python-dotenv
