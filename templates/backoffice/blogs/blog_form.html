@@ -15,12 +15,18 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     {{ field.label }} {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
                 </label>
-                {% if field.name == 'image' and form.instance.image %}
-                <div class="mb-3">
-                    <img src="{{ form.instance.image.url }}" alt="Image actuelle" class="w-40 h-40 object-cover rounded-lg shadow-sm">
+
+                {% if field.name == 'titre' %}
+                <div class="flex gap-2">
+                    {{ field }}
+                    <button type="button" onclick="generateBlog()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 transition flex items-center gap-1 text-sm whitespace-nowrap">
+                        <i class="fas fa-robot"></i> IA Blog
+                    </button>
                 </div>
-                {% endif %}
+                {% else %}
                 {{ field }}
+                {% endif %}
+
                 {% if field.errors %}
                     <p class="mt-1 text-xs text-red-600">{{ field.errors|join:", " }}</p>
                 {% endif %}
@@ -36,6 +42,116 @@
                 </a>
             </div>
         </form>
+
+        <!-- MODAL IA -->
+        <div id="blogModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+            <div class="bg-white rounded-xl p-6 max-w-4xl w-full mx-4 max-h-screen overflow-y-auto">
+                <h3 class="text-xl font-bold mb-4">Suggestions d'articles (Groq AI)</h3>
+                <div class="space-y-4 mb-4">
+                    <label class="block text-sm font-medium">Thème</label>
+                    <input id="themeInput" type="text" value="innovation" class="w-full px-3 py-2 border rounded-lg">
+                    
+                    <label class="block text-sm font-medium mt-3">Ton</label>
+                    <select id="tonSelect" class="w-full px-3 py-2 border rounded-lg">
+                        <option value="professionnel">Professionnel</option>
+                        <option value="décontracté">Décontracté</option>
+                        <option value="inspirant">Inspirant</option>
+                    </select>
+
+                    <label class="block text-sm font-medium mt-3">Longueur</label>
+                    <select id="longueurSelect" class="w-full px-3 py-2 border rounded-lg">
+                        <option value="court">Court (~200 mots)</option>
+                        <option value="moyen" selected>Moyen (~400 mots)</option>
+                        <option value="long">Long (~600 mots)</option>
+                    </select>
+                </div>
+
+                <div id="articlesList" class="space-y-6 mb-4"></div>
+
+                <div class="flex gap-2">
+                    <button onclick="closeBlogModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400">
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+let blogArticles = [];
+
+function generateBlog() {
+    const titre = document.querySelector('input[name="titre"]').value.trim();
+    if (!titre) {
+        alert("Entrez un titre d'article !");
+        return;
+    }
+
+    document.getElementById('blogModal').classList.remove('hidden');
+    generateArticles(titre);
+}
+
+function generateArticles(titre) {
+    const theme = document.getElementById('themeInput').value;
+    const ton = document.getElementById('tonSelect').value;
+    const longueur = document.getElementById('longueurSelect').value;
+
+    const btn = event.target;
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
+    btn.disabled = true;
+
+    fetch("{% url 'blogs:generate_content' %}", {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ titre, theme, ton, longueur })
+    })
+    .then(r => r.ok ? r.json() : r.text().then(t => {throw new Error(t)}))
+    .then(data => {
+        if (data.error) throw new Error(data.error);
+        blogArticles = data.articles;
+        displayArticles();
+    })
+    .catch(err => {
+        alert("Erreur IA : " + err.message);
+        console.error(err);
+    })
+    .finally(() => {
+        btn.innerHTML = original;
+        btn.disabled = false;
+    });
+}
+
+function displayArticles() {
+    const list = document.getElementById('articlesList');
+    list.innerHTML = blogArticles.map((a, i) => `
+        <div class="border border-purple-200 rounded-lg p-4 bg-purple-50">
+            <h4 class="font-bold text-purple-800 mb-2">${a.titre}</h4>
+            <p class="text-sm text-gray-700 line-clamp-3">${a.contenu.replace(/\n/g, '<br>')}</p>
+            <button onclick="selectArticle(${i})" class="mt-3 bg-purple-600 text-white px-4 py-1 rounded text-sm hover:bg-purple-700">
+                Choisir cet article
+            </button>
+        </div>
+    `).join('');
+}
+
+function selectArticle(index) {
+    const article = blogArticles[index];
+    if (article) {
+        document.querySelector('input[name="titre"]').value = article.titre;
+        document.querySelector('textarea[name="contenu"]').value = article.contenu;
+    }
+    closeBlogModal();
+}
+
+function closeBlogModal() {
+    document.getElementById('blogModal').classList.add('hidden');
+}
+</script>
 {% endblock %}
