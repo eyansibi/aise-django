@@ -12,6 +12,13 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 import json
 
+from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.db.models import Q
+from .models import Blog
+
 # === BACKOFFICE ===
 @staff_member_required(login_url='users:login')
 def backoffice_blogs(request):
@@ -63,10 +70,10 @@ def backoffice_blog_delete(request, blog_id):
 
 # === FRONTOFFICE ===
 def blogs_list_public(request):
-    blogs = Blog.objects.all().order_by('-date_publication')
+    categorias = Blog._meta.get_field('categorie').choices  # Récupère les choix
     return render(request, 'frontoffice/blogs/blogs_list.html', {
-        'blogs': blogs,
-        'page_title': 'Blog'
+        'page_title': 'Blog',
+        'CATEGORIES': categorias,
     })
 
 def blog_detail_public(request, blog_id):
@@ -134,3 +141,41 @@ def generate_blog_content(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+def blogs_list_ajax(request):
+    blogs = Blog.objects.all()
+
+    search = request.GET.get('search', '').strip()
+    if search:
+        blogs = blogs.filter(Q(titre__icontains=search) | Q(contenu__icontains=search))
+
+    category = request.GET.get('category', '').strip()
+    if category:
+        blogs = blogs.filter(categorie=category)
+
+    sort = request.GET.get('sort', 'recent')
+    if sort == 'ancien':
+        blogs = blogs.order_by('date_publication')
+    elif sort == 'alpha':
+        blogs = blogs.order_by('titre')
+    else:
+        blogs = blogs.order_by('-date_publication')
+
+    paginator = Paginator(blogs, 6)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+
+    html = render_to_string('frontoffice/blogs/_blog_grid.html', {
+        'blogs': page_obj,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+    }, request=request)
+
+    return JsonResponse({
+        'html': html,
+        'count': paginator.count,
+    })
+    
+
+
+
+    

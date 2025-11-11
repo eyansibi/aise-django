@@ -13,5 +13,8 @@ urlpatterns = [
     path('generate-content/', views.generate_blog_content, name='generate_content'),
     # === Frontoffice ===
     path('public/', views.blogs_list_public, name='blogs_public'),
+    path('ajax/', views.blogs_list_ajax, name='blogs_list_ajax'),
     path('public/<int:blog_id>/', views.blog_detail_public, name='blog_detail_public'),
+
+
 ]
