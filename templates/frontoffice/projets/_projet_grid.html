@@ -1,0 +1,76 @@
+<!-- templates/frontoffice/projets/_projet_grid.html -->
+<div class="projet-grid grid-3" id="projetGrid">
+    {% for projet in projets %}
+    <a href="{% url 'projets:projet_detail_public' projet.id %}" class="projet-card group">
+        <div class="card-image">
+            {% if projet.image %}
+                <img src="{{ projet.image.url }}" alt="{{ projet.titre }}" loading="lazy">
+            {% else %}
+                <div class="card-placeholder">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                </div>
+            {% endif %}
+            <div class="card-badge">Projet</div>
+        </div>
+
+        <div class="card-body">
+            <h3 class="card-title">{{ projet.titre }}</h3>
+            <p class="card-desc">{{ projet.description|striptags|truncatewords:28 }}</p>
+
+            <div class="card-progress">
+                <div class="progress-fill" style="width: 0%" data-width="{{ projet.avancement|default:100 }}%"></div>
+            </div>
+
+            <div class="card-footer">
+                <div class="card-date">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span>{{ projet.date_creation|date:"d F Y" }}</span>
+                </div>
+                <div class="card-arrow">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <div class="empty-state">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+        </svg>
+        <h3>Aucun projet trouvé</h3>
+        <p>Essayez d'autres mots-clés.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<nav class="pagination-container">
+    {% if page_obj.has_previous %}
+        <button class="pagination-btn" data-page="1">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+        </button>
+        <button class="pagination-btn" data-page="{{ page_obj.previous_page_number }}">Précédent</button>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="pagination-btn active">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'3' %}
+            <button class="pagination-btn" data-page="{{ num }}">{{ num }}</button>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <button class="pagination-btn" data-page="{{ page_obj.next_page_number }}">Suivant</button>
+        <button class="pagination-btn" data-page="{{ page_obj.paginator.num_pages }}">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+        </button>
+    {% endif %}
+</nav>
+{% endif %}

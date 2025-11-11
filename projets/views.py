@@ -10,7 +10,12 @@ from groq import Groq
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
-
+from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.db.models import Q
+from .models import Projet
 
 client = Groq(api_key=settings.GROQ_API_KEY)
 
@@ -124,3 +129,36 @@ def generate_projet_description(request):
     except Exception as e:
         print("ERREUR GROQ:", str(e))  # Debug
         return JsonResponse({'error': 'Erreur Groq : ' + str(e)}, status=500)
+
+
+def projets_list_ajax(request):
+    projets = Projet.objects.filter(statut='termine')
+
+    search = request.GET.get('search', '').strip()
+    if search:
+        projets = projets.filter(
+            Q(titre__icontains=search) | Q(description__icontains=search)
+        )
+
+    sort = request.GET.get('sort', 'recent')
+    if sort == 'ancien':
+        projets = projets.order_by('date_creation')
+    elif sort == 'alpha':
+        projets = projets.order_by('titre')
+    else:
+        projets = projets.order_by('-date_creation')
+
+    paginator = Paginator(projets, 6)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+
+    html = render_to_string('frontoffice/projets/_projet_grid.html', {
+        'projets': page_obj,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+    }, request=request)
+
+    return JsonResponse({
+        'html': html,
+        'count': paginator.count,
+    })
