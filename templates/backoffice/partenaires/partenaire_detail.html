@@ -1,70 +1,94 @@
 {% extends "backoffice/base.html" %}
-{% block title %}Détail - {{ object.nom }}{% endblock %}
-{% block page_title %}Détail du partenaire{% endblock %}
+{% load static %}
+
+{% block page_title %}Détail – {{ object.nom }}{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-    <div class="p-6 border-b border-gray-200">
-        <div class="flex justify-between items-start">
-            <div class="flex items-center gap-4">
-                {% if object.logo %}
-                    <img src="{{ object.logo.url }}" alt="{{ object.nom }}" class="h-20 w-20 object-contain rounded-lg border">
-                {% else %}
-                    <div class="h-20 w-20 bg-gray-200 border-2 border-dashed rounded-lg flex items-center justify-center">
-                        <i class="fas fa-image text-gray-400 text-2xl"></i>
+<div class="max-w-4xl mx-auto mt-10">
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+        <!-- En-tête -->
+        <div class="p-8 bg-gradient-to-r from-aise-green/5 to-aise-yellow/5 border-b-2 border-aise-green/20">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                <div class="flex items-center gap-5">
+                    {% if object.logo %}
+                        <img src="{{ object.logo.url }}" alt="{{ object.nom }}" class="w-24 h-24 object-contain rounded-2xl shadow-lg border-2 border-white">
+                    {% else %}
+                        <div class="w-24 h-24 bg-gray-100 border-2 border-dashed rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 text-4xl"></i>
+                        </div>
+                    {% endif %}
+                    <div>
+                        <h1 class="text-3xl font-bold text-text-dark">{{ object.nom }}</h1>
+                        <p class="text-sm text-text-medium mt-1">Ajouté le {{ object.date_ajout|date:"d/m/Y à H:i" }}</p>
                     </div>
-                {% endif %}
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">{{ object.nom }}</h1>
-                    <p class="text-sm text-gray-500">Ajouté le {{ object.date_ajout|date:"d/m/Y à H:i" }}</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <a href="{% url 'partenaires:backoffice_partenaire_edit' object.pk %}" 
+                       class="bg-gradient-to-r from-aise-yellow to-[#e0b61e] hover:from-[#e0b61e] hover:to-aise-yellow text-text-dark px-6 py-3.5 rounded-xl font-bold flex items-center gap-2 transition-all transform hover:scale-105 shadow-md">
+                        <i class="fas fa-edit"></i> Modifier
+                    </a>
+                    <a href="{% url 'partenaires:backoffice_partenaire_delete' object.pk %}" 
+                       class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-6 py-3.5 rounded-xl font-bold flex items-center gap-2 transition-all transform hover:scale-105 shadow-md">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </a>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <a href="{% url 'partenaires:update' object.pk %}" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 flex items-center gap-2">
-                    <i class="fas fa-edit"></i> Modifier
-                </a>
-                <a href="{% url 'partenaires:delete' object.pk %}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2">
-                    <i class="fas fa-trash"></i> Supprimer
-                </a>
+        </div>
+
+        <!-- Infos -->
+        <div class="p-8 space-y-8">
+            <!-- Site web -->
+            <div class="flex items-start gap-4">
+                <i class="fas fa-globe text-aise-green text-xl mt-1"></i>
+                <div class="flex-1">
+                    <p class="text-sm font-semibold text-text-dark uppercase tracking-wider">Site web</p>
+                    {% if object.site_web %}
+                        <a href="{{ object.site_web }}" target="_blank" class="text-lg text-aise-green hover:underline flex items-center gap-1 mt-1">
+                            <i class="fas fa-external-link-alt"></i> {{ object.site_web }}
+                        </a>
+                    {% else %}
+                        <p class="text-text-medium italic mt-1">Aucun site web renseigné</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="flex items-start gap-4">
+                <i class="fas fa-align-left text-aise-green text-xl mt-1"></i>
+                <div class="flex-1">
+                    <p class="text-sm font-semibold text-text-dark uppercase tracking-wider">Description</p>
+                    <p class="mt-1 text-text-dark leading-relaxed whitespace-pre-line">
+                        {{ object.description|default:"Aucune description disponible." }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Statut -->
+            <div class="flex items-center gap-4">
+                <i class="fas fa-toggle-on text-aise-green text-xl"></i>
+                <div>
+                    <p class="text-sm font-semibold text-text-dark uppercase tracking-wider">Statut</p>
+                    <span class="inline-flex items-center px-5 py-2 rounded-full text-sm font-bold shadow-sm mt-1
+                                 {% if object.actif %}bg-white text-green-700 border-2 border-green-200
+                                 {% else %}bg-white text-red-700 border-2 border-red-200{% endif %}">
+                        {% if object.actif %}
+                            <i class="fas fa-check mr-2"></i> Actif (visible publiquement)
+                        {% else %}
+                            <i class="fas fa-times mr-2"></i> Inactif
+                        {% endif %}
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="p-6 space-y-6">
-        <div>
-            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Site web</h3>
-            <p class="mt-1">
-                {% if object.site_web %}
-                    <a href="{{ object.site_web }}" target="_blank" class="text-blue-600 hover:underline flex items-center gap-1">
-                        <i class="fas fa-external-link-alt"></i> {{ object.site_web }}
-                    </a>
-                {% else %}
-                    <span class="text-gray-400">Aucun site web renseigné</span>
-                {% endif %}
-            </p>
+        <!-- Pied -->
+        <div class="px-8 py-5 bg-aise-green/5 border-t flex justify-between items-center">
+            <a href="{% url 'partenaires:backoffice_partenaires' %}" 
+               class="text-aise-green hover:underline flex items-center gap-2 font-medium">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
         </div>
-
-        <div>
-            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Description</h3>
-            <p class="mt-1 text-gray-700 whitespace-pre-line">
-                {{ object.description|default:"Aucune description disponible." }}
-            </p>
-        </div>
-
-        <div>
-            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Statut</h3>
-            <p class="mt-1">
-                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {% if object.actif %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
-                    {{ object.actif|yesno:"Actif,Inactif" }}
-                </span>
-            </p>
-        </div>
-    </div>
-
-    <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
-        <a href="{% url 'partenaires:list' %}" class="text-blue-600 hover:underline flex items-center gap-1">
-            <i class="fas fa-arrow-left"></i> Retour à la liste
-        </a>
     </div>
 </div>
 {% endblock %}
