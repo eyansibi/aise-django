@@ -16,7 +16,10 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.db.models import Q
 from .models import Projet
-
+from django.http import HttpResponse  # ← CORRECT
+from django.template.loader import render_to_string
+from django.utils import timezone
+from xhtml2pdf import pisa
 client = Groq(api_key=settings.GROQ_API_KEY)
 
 
@@ -162,3 +165,79 @@ def projets_list_ajax(request):
         'html': html,
         'count': paginator.count,
     })
+
+
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+from django.utils import timezone
+import io
+
+@staff_member_required
+def export_projets_pdf(request):
+    projets = Projet.objects.filter(statut='termine').order_by('-date_creation')
+    
+    html = render_to_string('backoffice/projets/projet_pdf.html', {
+        'projets': projets,
+        'now': timezone.now(),
+        'request': request,  # Pour les URLs absolues des images
+    })
+    
+    result = io.BytesIO()
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("UTF-8")), result)
+    
+    if not pdf.err:
+        response = HttpResponse(result.getvalue(), content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="AISE_Projets.pdf"'
+        return response
+    
+    return HttpResponse("Erreur lors de la génération du PDF", status=400)
+
+# projets/views.py → AJOUTE CETTE FONCTION
+
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+from django.utils import timezone
+import io
+
+@staff_member_required
+def export_projets_pdf_filtered(request):
+    # Récupère les mêmes filtres que la liste
+    projets = Projet.objects.all()
+    
+    # Recherche
+    q = request.GET.get('q', '').strip()
+    if q:
+        projets = projets.filter(
+            Q(titre__icontains=q) | Q(description__icontains=q)
+        )
+    
+    # Statut
+    statut = request.GET.get('statut', '').strip()
+    if statut:
+        projets = projets.filter(statut=statut)
+    else:
+        projets = projets.filter(statut='termine')  # Par défaut : terminés
+
+    projets = projets.order_by('-date_creation')
+
+    html = render_to_string('backoffice/projets/projet_pdf.html', {
+        'projets': projets,
+        'now': timezone.now(),
+        'request': request,
+        'q': q,
+        'statut': statut,
+        'statut_label': dict(Projet.STATUT_CHOICES).get(statut, 'Tous') if statut else 'Terminés',
+    })
+    
+    result = io.BytesIO()
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("UTF-8")), result)
+    
+    if not pdf.err:
+        response = HttpResponse(result.getvalue(), content_type='application/pdf')
+        filename = f"AISE_Projets_{statut or 'termine'}_{timezone.now().strftime('%Y%m%d')}.pdf"
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+    
+    return HttpResponse(f"Erreur PDF : {pdf.err}", status=400)

@@ -36,18 +36,12 @@
             </button>
         </div>
         <div class="flex gap-2 justify-end">
-            <a href="?format=csv{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.statut %}&statut={{ request.GET.statut }}{% endif %}"
-               class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 text-xs flex items-center gap-1">
-                <i class="fas fa-file-csv"></i> CSV
-            </a>
-            <a href="?format=xlsx{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.statut %}&statut={{ request.GET.statut }}{% endif %}"
-               class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 text-xs flex items-center gap-1">
-                <i class="fas fa-file-excel"></i> Excel
-            </a>
-            <a href="?format=pdf{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.statut %}&statut={{ request.GET.statut }}{% endif %}"
-               class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 text-xs flex items-center gap-1">
-                <i class="fas fa-file-pdf"></i> PDF
-            </a>
+        
+            <a href="{% url 'projets:export_projets_pdf_filtered' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.statut %}statut={{ request.GET.statut }}{% endif %}"
+                class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 text-xs flex items-center gap-1"
+                target="_blank">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </a>
         </div>
     </form>
 </div>

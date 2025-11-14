@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>AISE - Rapport Projets</title>
+    <style>
+        /* === COULEURS FIXES (pas de var()) === */
+        /* Remplace var(--aise-green) → #087065 */
+        /* Remplace var(--text-dark) → #1f2937 */
+        /* etc. */
+
+        @page {
+            size: A4;
+            margin: 2.5cm 2cm 3.5cm 2cm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #1f2937;
+            background: #f9fafb;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 21cm;
+            margin: 0 auto;
+            background: white;
+            padding: 2.8cm 2.2cm;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        /* === EN-TÊTE === */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2.2rem;
+            padding-bottom: 0.9rem;
+            border-bottom: 4px solid #087065;
+        }
+        .header h1 {
+            font-size: 1.95rem;
+            font-weight: 800;
+            color: #087065;
+            margin: 0;
+            letter-spacing: -0.6px;
+        }
+        .header .tagline {
+            color: #4b5563;
+            font-weight: 600;
+            font-size: 0.88rem;
+            margin: 0.25rem 0 0;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+        }
+        .header-meta {
+            text-align: right;
+            font-size: 0.78rem;
+            color: #4b5563;
+            line-height: 1.4;
+        }
+        .header-meta strong {
+            color: #087065;
+            font-weight: 700;
+        }
+
+        /* === FILTRES === */
+        .filters {
+            text-align: center;
+            margin: 1.8rem 0 2.4rem;
+            padding: 0.85rem;
+            background: rgba(8, 112, 101, 0.06);
+            border-radius: 10px;
+            font-size: 0.88rem;
+            color: #4b5563;
+            font-weight: 500;
+            border: 1px dashed #e5e7eb;
+        }
+        .filters strong {
+            color: #1f2937;
+            font-weight: 700;
+        }
+
+        /* === TABLEAU === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.8rem 0;
+            font-size: 0.88rem;
+            background: white;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-header td {
+            padding: 1rem 1.1rem;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: white;
+            background: #087065;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+            page-break-inside: avoid;
+        }
+        tbody tr:nth-child(even) {
+            background: #fdfdfd;
+        }
+        tbody tr:hover {
+            background: #f5fffa;
+        }
+
+        tbody td {
+            padding: 1.1rem 1.1rem;
+            vertical-align: middle;
+        }
+
+        /* === COLONNES === */
+        .col-image { width: 8%; }
+        .col-projet { width: 23%; }
+        .col-description { width: 44%; }
+        .col-createur { width: 15%; }
+        .col-date { width: 10%; }
+
+        /* === IMAGE === */
+        .projet-img {
+            width: 58px;
+            height: 58px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            display: block;
+        }
+
+        /* === TITRE + STATUT === */
+        .projet-title {
+            font-weight: 700;
+            color: #087065;
+            font-size: 0.98rem;
+            margin-bottom: 0.35rem;
+            line-height: 1.3;
+        }
+        .statut {
+            padding: 4px 11px;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-top: 0.2rem;
+        }
+        .termine    { background: #d4edda; color: #155724; }
+        .en_cours   { background: #cfe2ff; color: #084298; }
+        .en_attente { background: #fff3cd; color: #664d03; }
+        .annule     { background: #f8d7da; color: #721c24; }
+
+        /* === DESCRIPTION === */
+        .description {
+            font-size: 0.84rem;
+            color: #4b5563;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* === MÉTA === */
+        .meta {
+            font-size: 0.79rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+        .meta strong {
+            color: #087065;
+            font-weight: 600;
+        }
+
+        /* === FOOTER === */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3cm;
+            background: linear-gradient(135deg, #087065, #065a52);
+            color: white;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 -6px 22px rgba(0,0,0,0.16);
+        }
+        .footer .content {
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 0 2.2cm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .footer strong {
+            color: #f4ca23;
+            font-weight: 700;
+        }
+        .footer .page-info {
+            font-size: 0.76rem;
+            opacity: 0.92;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- EN-TÊTE -->
+        <div class="header">
+            <div>
+                <h1>Rapport des Projets</h1>
+                <p class="tagline">AISE Cabinet Conseil</p>
+            </div>
+            <div class="header-meta">
+                Rapport généré le:<br>
+                <strong>{{ now|date:"d F Y à H:i" }}</strong>
+            </div>
+        </div>
+
+        <!-- FILTRES -->
+        {% if q or statut %}
+        <div class="filters">
+            Filtres actifs: 
+            {% if q %}Recherche : <strong>"{{ q }}"</strong>{% endif %}
+            {% if q and statut %} | {% endif %}
+            {% if statut %}Statut : <strong>{{ statut_label }}</strong>{% else %}Affichage par défaut : Tous les projets{% endif %}
+        </div>
+        {% endif %}
+
+        <!-- TABLEAU -->
+        <table>
+            <tr class="table-header">
+                <td class="col-image"></td>
+                <td class="col-projet">Projet / Statut</td>
+                <td class="col-description">Description</td>
+                <td class="col-createur">Chef de projet</td>
+                <td class="col-date">Date Création</td>
+            </tr>
+
+            <tbody>
+                {% for projet in projets %}
+                <tr>
+                    <td class="col-image">
+                        {% if projet.image %}
+                            <img src="{{ request.build_absolute_uri }}{{ projet.image.url }}" 
+                                 alt="{{ projet.titre }}" class="projet-img">
+                        {% else %}
+                            <div style="width:58px;height:58px;background:#f3f4f6;border-radius:10px;display:flex;align-items:center;justify-content:center;border:2px solid #e5e7eb;">
+                                <span style="color:#9ca3af;font-size:0.62rem;text-align:center;line-height:1.1;">Pas<br>d'image</span>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td class="col-projet">
+                        <div class="projet-title">{{ projet.titre }}</div>
+                        <span class="statut {{ projet.statut }}">{{ projet.get_statut_display }}</span>
+                    </td>
+                    <td class="col-description">
+                        <div class="description">{{ projet.description|linebreaks|truncatewords_html:28 }}</div>
+                    </td>
+                    <td class="col-createur">
+                        <div class="meta">
+                            {{ projet.createur.get_full_name|default:projet.createur.username }}
+                        </div>
+                    </td>
+                    <td class="col-date">
+                        <div class="meta">
+                            {{ projet.date_creation|date:"d/m/Y" }}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align:center;padding:2.2rem;color:#9ca3af;font-style:italic;font-size:0.9rem;">
+                        Aucun projet trouvé correspondant aux filtres.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="content">
+            <div>
+                Généré le <strong>{{ now|date:"d/m/Y à H:i" }}</strong> | 
+                Document confidentiel de <strong>AISE Cabinet</strong> – Communication Institutionnelle
+            </div>
+            <div class="page-info">Page 1</div>
+        </div>
+    </div>
+</body>
+</html>
