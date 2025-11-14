@@ -50,7 +50,7 @@
         pointer-events: none;
     }
 
-    .btn-primary, .btn-secondary {
+    .btn-primary, .btn-secondary, .btn-logout {
         font-size: 1.1rem;
         font-weight: 700;
         letter-spacing: 0.5px;
@@ -61,6 +61,7 @@
         align-items: center;
         gap: 0.75rem;
     }
+
     .btn-primary {
         background: var(--primary);
         color: white;
@@ -71,6 +72,7 @@
         transform: translateY(-3px);
         box-shadow: 0 15px 35px rgba(8, 112, 101, 0.4);
     }
+
     .btn-secondary {
         background: white;
         color: var(--primary);
@@ -81,6 +83,18 @@
         background: var(--primary);
         color: white;
         transform: translateY(-3px);
+    }
+
+    /* === BOUTON DÉCONNEXION === */
+    .btn-logout {
+        background: #dc2626;
+        color: white;
+        box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
+    }
+    .btn-logout:hover {
+        background: #b91c1c;
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(220, 38, 38, 0.4);
     }
 
     /* === SECTIONS === */
@@ -191,7 +205,7 @@
         .expertise-card h3 { font-size: 1.5rem; }
         .faq-item h3 { font-size: 1.35rem; }
         .cta h2 { font-size: 2.3rem; }
-        .btn-primary, .btn-secondary { padding: 0.875rem 1.5rem; font-size: 1rem; }
+        .btn-primary, .btn-secondary, .btn-logout { padding: 0.875rem 1.5rem; font-size: 1rem; }
     }
 </style>
 
@@ -223,19 +237,54 @@
                 pour <strong>maximiser votre visibilité</strong> et <strong>renforcer votre image de marque</strong>.
             </p>
 
+            <!-- BOUTONS AJUSTÉS ICI -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in delay-500">
-                <a href="{% url 'reclamations:reclamation_public' %}" class="btn-primary">
-                    <span>Nous contacter</span>
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
-                <a href="#qui-sommes-nous" class="btn-secondary">
-                    <span>Découvrir AISE</span>
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-                    </svg>
-                </a>
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <a href="{% url 'users:backoffice_dashboard' %}" class="btn-primary">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1.5.75a3 3 0 01-3-2.598V7.5a3 3 0 013-3h6.75a3 3 0 013 3v9.75a3 3 0 01-3 3H9.75z"/>
+                            </svg>
+                            <span>Dashboard Admin</span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'projets:projets_public' %}" class="btn-primary">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                            </svg>
+                            <span>Voir les projets</span>
+                        </a>
+                    {% endif %}
+
+                    <a href="{% url 'reclamations:reclamation_public' %}" class="btn-secondary">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                        <span>Nous contacter</span>
+                    </a>
+
+                    <!-- DÉCONNEXION -->
+                    <a href="{% url 'users:logout' %}?next={{ request.path }}" class="btn-logout">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        <span>Déconnexion</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'users:login' %}?next={{ request.path }}" class="btn-primary">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                        </svg>
+                        <span>Se connecter</span>
+                    </a>
+
+                    <a href="{% url 'users:register' %}" class="btn-secondary">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                        </svg>
+                        <span>S'inscrire</span>
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -309,6 +358,7 @@
         </div>
     </div>
 </section>
+
 <!-- ====================== PARTENAIRES – DÉFILEMENT INFINI ====================== -->
 {% if partenaires %}
 <section class="py-16 bg-white border-t border-gray-100">
@@ -328,7 +378,8 @@
                         {% if partenaire.logo %}
                             <img src="{{ partenaire.logo.url }}"
                                  alt="{{ partenaire.nom }}"
-                                 class="h-16 w-auto object-contain mx-auto **transition-all duration-500 group-hover:scale-105**"> {% else %}
+                                 class="h-16 w-auto object-contain mx-auto transition-all duration-500 group-hover:scale-105">
+                        {% else %}
                             <div class="h-16 flex items-center justify-center bg-gray-100 rounded-lg">
                                 <span class="text-gray-500 text-sm font-semibold">{{ partenaire.nom|truncatechars:10 }}</span>
                             </div>
@@ -337,13 +388,15 @@
                 </div>
                 {% endfor %}
 
+                <!-- Duplication pour boucle infinie -->
                 {% for partenaire in partenaires %}
                 <div class="flex-shrink-0 mx-8 group">
                     <a href="{{ partenaire.site_web|default:'#' }}" target="_blank" class="block p-4 bg-white rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         {% if partenaire.logo %}
                             <img src="{{ partenaire.logo.url }}"
                                  alt="{{ partenaire.nom }}"
-                                 class="h-16 w-auto object-contain mx-auto **transition-all duration-500 group-hover:scale-105**"> {% else %}
+                                 class="h-16 w-auto object-contain mx-auto transition-all duration-500 group-hover:scale-105">
+                        {% else %}
                             <div class="h-16 flex items-center justify-center bg-gray-100 rounded-lg">
                                 <span class="text-gray-500 text-sm font-semibold">{{ partenaire.nom|truncatechars:10 }}</span>
                             </div>
@@ -370,6 +423,7 @@
     }
 </style>
 {% endif %}
+
 <!-- ====================== FAQ – 100% LARGEUR ====================== -->
 <section class="faq bg-[#f8f9fa] py-24">
     <div class="full-width">
@@ -468,6 +522,5 @@
         </div>
     </div>
 </section>
-
 
 {% endblock %}
