@@ -1,59 +1,96 @@
 {% extends "backoffice/base.html" %}
+{% load static %}
 
 {% block page_title %}Articles Blog{% endblock %}
 
 {% block content %}
-<div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Blog</h1>
-    <a href="{% url 'blogs:backoffice_blog_add' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
-        <i class="fas fa-plus"></i> Ajouter
-    </a>
+<div class="mb-8">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 class="text-3xl font-bold text-text-dark flex items-center gap-3">
+            <i class="fas fa-blog text-aise-green text-3xl"></i>
+            <span>Blog</span>
+        </h1>
+        <a href="{% url 'blogs:backoffice_blog_add' %}" 
+           class="bg-gradient-to-r from-aise-green to-[#065a52] hover:from-[#065a52] hover:to-aise-green text-white px-6 py-3.5 rounded-xl font-bold flex items-center gap-2.5 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+            <i class="fas fa-plus"></i> Nouvel article
+        </a>
+    </div>
 </div>
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+<!-- TABLEAU PRO -->
+<div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full">
-            <thead class="bg-gray-50 border-b border-gray-200">
+            <!-- En-tête -->
+            <thead class="bg-gradient-to-r from-aise-green/5 to-aise-yellow/5 border-b-2 border-aise-green/20">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Article</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-text-dark uppercase tracking-widest">Article</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-text-dark uppercase tracking-widest">Auteur</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-text-dark uppercase tracking-widest">Publié le</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-text-dark uppercase tracking-widest">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
+
+            <!-- Corps -->
+            <tbody class="divide-y divide-gray-100">
                 {% for blog in blogs %}
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
+                <tr class="hover:bg-gradient-to-r hover:from-aise-yellow/5 hover:to-white transition-all duration-300 group">
+                    <!-- Article + Image -->
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-4">
                             {% if blog.image %}
-                                <img src="{{ blog.image.url }}" alt="{{ blog.titre }}" class="w-12 h-12 object-cover rounded-lg shadow-sm">
+                                <img src="{{ blog.image.url }}" alt="{{ blog.titre }}" class="w-14 h-14 object-cover rounded-xl shadow-sm group-hover:scale-105 transition-transform">
                             {% else %}
-                                <div class="w-12 h-12 bg-gray-200 border-2 border-dashed rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-image text-gray-400 text-xs"></i>
+                                <div class="w-14 h-14 bg-gray-100 border-2 border-dashed rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-image text-gray-400 text-xl"></i>
                                 </div>
                             {% endif %}
                             <div>
-                                <p class="text-sm font-medium text-gray-900">{{ blog.titre }}</p>
-                                <p class="text-xs text-gray-500">par {{ blog.auteur.username }}</p>
+                                <p class="font-bold text-text-dark line-clamp-1">{{ blog.titre }}</p>
+                                <p class="text-xs text-text-medium line-clamp-2">{{ blog.contenu|truncatewords:10 }}</p>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 text-sm text-gray-500">
+
+                    <!-- Auteur -->
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-2">
+                            <div class="w-9 h-9 bg-aise-green rounded-full flex items-center justify-center text-white font-bold text-xs">
+                                {{ blog.auteur.username|slice:":1"|upper }}
+                            </div>
+                            <span class="font-medium text-text-dark">{{ blog.auteur.username }}</span>
+                        </div>
+                    </td>
+
+                    <!-- Date -->
+                    <td class="px-6 py-5 text-sm font-medium text-text-medium">
                         {{ blog.date_publication|date:"d/m/Y" }}
                     </td>
-                    <td class="px-6 py-4 text-sm font-medium space-x-3">
-                        <a href="{% url 'blogs:backoffice_blog_edit' blog.id %}" class="text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a href="{% url 'blogs:backoffice_blog_delete' blog.id %}" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </a>
+
+                    <!-- Actions -->
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-4">
+                            <a href="{% url 'blogs:backoffice_blog_edit' blog.id %}" 
+                               class="text-aise-green hover:text-[#065a52] transition-transform transform hover:scale-125"
+                               title="Modifier">
+                                <i class="fas fa-edit text-lg"></i>
+                            </a>
+                            <a href="{% url 'blogs:backoffice_blog_delete' blog.id %}" 
+                               class="text-red-600 hover:text-red-700 transition-transform transform hover:scale-125"
+                               title="Supprimer">
+                                <i class="fas fa-trash text-lg"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="3" class="px-6 py-12 text-center text-gray-500">
-                        Aucun article.
+                    <td colspan="4" class="px-6 py-20 text-center">
+                        <div class="max-w-xs mx-auto">
+                            <i class="fas fa-feather-alt text-7xl text-gray-200 mb-4 block"></i>
+                            <p class="text-xl font-medium text-text-medium">Aucun article</p>
+                            <p class="text-sm text-gray-500 mt-2">Commencez à écrire !</p>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

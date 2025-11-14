@@ -4,11 +4,30 @@
 {% block page_title %}Tableau de bord{% endblock %}
 
 {% block extra_head %}
-<!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-    .chart-container { position: relative; height: 240px; }
-    .badge { @apply px-3 py-1 text-xs font-medium rounded-full; }
+    .chart-container { position: relative; height: 260px; }
+    .badge {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 9999px;
+        color: white;
+        background: linear-gradient(to right, #087065, #f4ca23);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        animation: fadeIn 0.5s ease-out;
+    }
+    .count-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
 </style>
 {% endblock %}
 
@@ -17,12 +36,15 @@
 <!-- ==================== CARTES PRINCIPALES ==================== -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- Utilisateurs -->
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
         <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600">Utilisateurs</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">{{ total_users|default:"0" }}</p>
-                <p class="text-xs text-green-600 mt-2">{{ users_growth|default:"+0%" }} ce mois</p>
+            <div class="count-up">
+                <p class="text-sm text-text-medium">Utilisateurs</p>
+                <p class="text-3xl font-bold text-text-dark mt-1">{{ total_users|default:"0" }}</p>
+                <p class="text-xs text-aise-green mt-2 flex items-center gap-1">
+                    <i class="fas fa-arrow-up"></i>
+                    {{ users_growth|default:"+0%" }} ce mois
+                </p>
             </div>
             <div class="p-3 bg-blue-100 rounded-full">
                 <i class="fas fa-users text-blue-600 text-xl"></i>
@@ -31,172 +53,117 @@
     </div>
 
     <!-- Projets actifs -->
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
         <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600">Projets actifs</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">{{ projets_actifs|default:"0" }}</p>
-                <p class="text-xs text-green-600 mt-2">{{ nouveaux_projets|default:"+0" }} nouveaux</p>
+            <div class="count-up">
+                <p class="text-sm text-text-medium">Projets actifs</p>
+                <p class="text-3xl font-bold text-text-dark mt-1">{{ projets_actifs|default:"0" }}</p>
+                <p class="text-xs text-aise-green mt-2 flex items-center gap-1">
+                    <i class="fas fa-plus"></i>
+                    {{ nouveaux_projets|default:"+0" }} nouveaux
+                </p>
             </div>
-            <div class="p-3 bg-green-100 rounded-full">
-                <i class="fas fa-folder-open text-green-600 text-xl"></i>
+            <div class="p-3 bg-aise-green/10 rounded-full">
+                <i class="fas fa-folder-open text-aise-green text-xl"></i>
             </div>
         </div>
     </div>
 
     <!-- Réclamations -->
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
         <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600">Réclamations</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">{{ total_reclamations|default:"0" }}</p>
-                <p class="text-xs text-orange-600 mt-2">{{ reclamations_en_attente|default:"0" }} en attente</p>
+            <div class="count-up">
+                <p class="text-sm text-text-medium">Réclamations</p>
+                <p class="text-3xl font-bold text-text-dark mt-1">{{ total_reclamations|default:"0" }}</p>
+                <p class="text-xs text-orange-600 mt-2 flex items-center gap-1">
+                    <i class="fas fa-clock"></i>
+                    {{ reclamations_en_attente|default:"0" }} en attente
+                </p>
             </div>
             <div class="p-3 bg-orange-100 rounded-full">
-                <i class="fas fa-envelope text-orange-600 text-xl"></i>
+                <i class="fas fa-exclamation-triangle text-orange-600 text-xl"></i>
             </div>
         </div>
     </div>
 
     <!-- Articles publiés -->
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
         <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600">Articles publiés</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">{{ total_blogs|default:"0" }}</p>
-                <p class="text-xs text-green-600 mt-2">{{ blogs_this_month|default:"+0" }} ce mois</p>
+            <div class="count-up">
+                <p class="text-sm text-text-medium">Articles publiés</p>
+                <p class="text-3xl font-bold text-text-dark mt-1">{{ total_blogs|default:"0" }}</p>
+                <p class="text-xs text-aise-green mt-2 flex items-center gap-1">
+                    <i class="fas fa-plus"></i>
+                    {{ blogs_this_month|default:"+0" }} ce mois
+                </p>
             </div>
-            <div class="p-3 bg-purple-100 rounded-full">
-                <i class="fas fa-newspaper text-purple-600 text-xl"></i>
+            <div class="p-3 bg-aise-yellow/20 rounded-full">
+                <i class="fas fa-newspaper text-aise-yellow text-xl"></i>
             </div>
         </div>
-    </div>
-</div>
-
-
-<!-- ==================== NOUVELLES STATS INTELLIGENTES ==================== -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <!-- Résolution moyenne -->
-    <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-xl shadow-sm p-6 hover:shadow-lg transition">
-        <p class="text-sm opacity-90">Résolution moyenne</p>
-        <p class="text-3xl font-bold mt-1">{{ avg_resolution_days|default:"0" }} <span class="text-sm">jours</span></p>
-        <p class="text-xs mt-2">Objectif < 5 jours</p>
-    </div>
-
-    <!-- Satisfaction IA -->
-    <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl shadow-sm p-6 hover:shadow-lg transition">
-        <p class="text-sm opacity-90">Satisfaction estimée (IA)</p>
-        <p class="text-3xl font-bold mt-1">{{ satisfaction_score|default:"0" }}/10</p>
-        <p class="text-xs mt-2">Rapidité + volume</p>
-    </div>
-
-    <!-- Projets à risque -->
-    <div class="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-xl shadow-sm p-6 hover:shadow-lg transition">
-        <p class="text-sm opacity-90">Projets à risque</p>
-        <p class="text-3xl font-bold mt-1">{{ projets_a_risque|default:"0" }}</p>
-        <p class="text-xs mt-2">Retard > 7 jours</p>
-    </div>
-
-    <!-- Prédiction -->
-    <div class="bg-gradient-to-br from-teal-500 to-teal-600 text-white rounded-xl shadow-sm p-6 hover:shadow-lg transition">
-        <p class="text-sm opacity-90">Prédiction mois prochain</p>
-        <p class="text-3xl font-bold mt-1">~{{ prediction_reclamations|default:"0" }}</p>
-        <p class="text-xs mt-2">réclamations</p>
     </div>
 </div>
 
 <!-- ==================== TOP MOTS-CLÉS ==================== -->
 <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 mb-8">
-    <h3 class="text-lg font-semibold text-gray-800 mb-3">Top mots dans les réclamations</h3>
+    <h3 class="text-lg font-semibold text-text-dark mb-4 flex items-center gap-2">
+        <i class="fas fa-tags text-aise-green"></i> Top mots dans les réclamations
+    </h3>
     <div class="flex flex-wrap gap-2">
         {% for mot in top_mots_labels %}
-            <span class="px-3 py-1 text-xs font-medium rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white">{{ mot }}</span>
+            <span class="badge">{{ mot }}</span>
         {% empty %}
-            <span class="text-gray-500 text-sm">Aucun mot détecté</span>
+            <span class="text-text-medium text-sm italic">Aucun mot détecté</span>
         {% endfor %}
     </div>
 </div>
+
 <!-- ==================== RACCOURCIS ==================== -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <a href="{% url 'users:backoffice_users' %}" 
-       class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
-        <div class="flex items-center justify-between">
-            <div>
-                <h3 class="text-lg font-semibold">Gérer les utilisateurs</h3>
-                <p class="text-blue-100 text-sm mt-1">Ajouter, modifier, supprimer</p>
-            </div>
-            <i class="fas fa-arrow-right text-xl"></i>
+       class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex items-center justify-between">
+        <div>
+            <h3 class="text-lg font-semibold">Gérer les utilisateurs</h3>
+            <p class="text-blue-100 text-sm mt-1">Ajouter, modifier, supprimer</p>
         </div>
+        <i class="fas fa-arrow-right text-xl"></i>
     </a>
 
     <a href="{% url 'projets:backoffice_projets' %}" 
-       class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
-        <div class="flex items-center justify-between">
-            <div>
-                <h3 class="text-lg font-semibold">Projets</h3>
-                <p class="text-green-100 text-sm mt-1">Suivi et validation</p>
-            </div>
-            <i class="fas fa-arrow-right text-xl"></i>
+       class="bg-gradient-to-r from-aise-green to-[#065a52] text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex items-center justify-between">
+        <div>
+            <h3 class="text-lg font-semibold">Projets</h3>
+            <p class="text-green-100 text-sm mt-1">Suivi et validation</p>
         </div>
+        <i class="fas fa-arrow-right text-xl"></i>
     </a>
 
     <a href="{% url 'blogs:backoffice_blogs' %}" 
-       class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1">
-        <div class="flex items-center justify-between">
-            <div>
-                <h3 class="text-lg font-semibold">Publications</h3>
-                <p class="text-purple-100 text-sm mt-1">Blog & actualités</p>
-            </div>
-            <i class="fas fa-arrow-right text-xl"></i>
+       class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex items-center justify-between">
+        <div>
+            <h3 class="text-lg font-semibold">Publications</h3>
+            <p class="text-orange-100 text-sm mt-1">Blog & actualités</p>
         </div>
+        <i class="fas fa-arrow-right text-xl"></i>
     </a>
 </div>
-<!-- ==================== COMPARAISON CROISSANCE ==================== -->
-{% if croissance_leader %}
-<div class="bg-gradient-to-r from-green-500 to-teal-600 text-white p-6 rounded-xl shadow-lg mb-8">
-    <h3 class="text-lg font-semibold">Croissance du mois</h3>
-    <p class="text-2xl font-bold mt-2">
-        {{ croissance_leader }} en tête
-        {% if croissance_diff %} <span class="text-green-200">({{ croissance_diff }})</span>{% endif %}
-    </p>
-</div>
-{% endif %}
-
-<!-- ==================== GRAPHIQUES CHART.JS ==================== -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-    <!-- Utilisateurs par mois -->
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Évolution des utilisateurs</h3>
-        <div class="chart-container">
-            <canvas id="usersChart"></canvas>
-        </div>
-    </div>
-
-    <!-- Réclamations par mois -->
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Évolution des réclamations</h3>
-        <div class="chart-container">
-            <canvas id="reclamationsChart"></canvas>
-        </div>
-    </div>
-</div>
-
-
 
 <!-- ==================== ACTIVITÉ RÉCENTE ==================== -->
 <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">Activité récente</h3>
-    <ul class="space-y-3 text-sm text-gray-600">
+    <h3 class="text-lg font-semibold text-text-dark mb-4 flex items-center gap-2">
+        <i class="fas fa-history text-aise-green"></i> Activité récente
+    </h3>
+    <ul class="space-y-3 text-sm text-text-medium">
         {% for activity in recent_activity %}
         <li class="flex items-center gap-3">
-            <i class="fas {{ activity.icon }} {{ activity.color }}"></i>
+            <i class="fas {{ activity.icon }} {{ activity.color }} w-5 h-5"></i>
             <span>
                 {{ activity.text|safe }}
-                <span class="text-gray-400">à {{ activity.time }}</span>
+                <span class="text-text-medium/70">· {{ activity.time }}</span>
             </span>
         </li>
         {% empty %}
-        <li class="text-gray-500">Aucune activité récente.</li>
+        <li class="text-text-medium italic">Aucune activité récente.</li>
         {% endfor %}
     </ul>
 </div>
@@ -205,38 +172,73 @@
 
 {% block extra_js %}
 <script>
-    // === CHART UTILISATEURS ===
-    const usersCtx = document.getElementById('usersChart').getContext('2d');
-    new Chart(usersCtx, {
-        type: 'line',
-        data: {
-            labels: {{ users_chart_labels|safe }},
-            datasets: [{
-                label: 'Nouveaux utilisateurs',
-                data: {{ users_chart_data|safe }},
-                borderColor: '#3B82F6',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-    });
+    // === GRAPHIQUE UTILISATEURS ===
+    const usersCtx = document.getElementById('usersChart')?.getContext('2d');
+    if (usersCtx) {
+        new Chart(usersCtx, {
+            type: 'line',
+            data: {
+                labels: {{ users_chart_labels|safe }},
+                datasets: [{
+                    label: 'Nouveaux utilisateurs',
+                    data: {{ users_chart_data|safe }},
+                    borderColor: '#087065',
+                    backgroundColor: 'rgba(8, 112, 101, 0.08)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#087065',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', cornerRadius: 8 }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
 
-    // === CHART RÉCLAMATIONS ===
-    const recCtx = document.getElementById('reclamationsChart').getContext('2d');
-    new Chart(recCtx, {
-        type: 'bar',
-        data: {
-            labels: {{ reclamations_chart_labels|safe }},
-            datasets: [{
-                label: 'Réclamations',
-                data: {{ reclamations_chart_data|safe }},
-                backgroundColor: '#FB923C',
-                borderRadius: 6
-            }]
-        },
-        options:{ responsive: true, maintainAspectRatio: false }
-    });
+    // === GRAPHIQUE RÉCLAMATIONS ===
+    const recCtx = document.getElementById('reclamationsChart')?.getContext('2d');
+    if (recCtx) {
+        new Chart(recCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ reclamations_chart_labels|safe }},
+                datasets: [{
+                    label: 'Réclamations',
+                    data: {{ reclamations_chart_data|safe }},
+                    backgroundColor: '#f4ca23',
+                    borderColor: '#e0b61e',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    hoverBackgroundColor: '#f4ca23dd'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', cornerRadius: 8 }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
 </script>
 {% endblock %}

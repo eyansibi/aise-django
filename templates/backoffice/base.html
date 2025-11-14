@@ -5,78 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Backoffice AISE{% endblock %}</title>
 
-    <!-- Tailwind CSS via CDN (ou installe via npm en prod) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-    <style>
-        .active-link {
-            @apply bg-blue-700 text-white;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'aise-green': '#087065',
+                        'aise-yellow': '#f4ca23',
+                        'aise-bg': '#f8f9fa',
+                        'text-dark': '#1f2937',
+                        'text-medium': '#4b5563',
+                    }
+                }
+            }
         }
-        .sidebar-link:hover {
-            @apply bg-blue-50 text-blue-700;
+    </script>
+
+    <style>
+        /* === LIEN ACTIF (VERT AISE) === */
+        .active-link {
+            @apply bg-aise-green text-white shadow-md;
+        }
+
+        /* === CLIC / FOCUS : JAUNE FONCÉ + ANIMATION === */
+        .menu-link:active,
+        .menu-link:focus {
+            @apply bg-[#e0b61e] text-white outline-none ring-2 ring-aise-yellow ring-opacity-50 transform scale-95;
+        }
+
+        /* === TRANSITION FLUIDE === */
+        .menu-link {
+            @apply transition-all duration-200 ease-in-out;
+        }
+
+        /* === BOUTONS === */
+        .btn-primary {
+            @apply bg-aise-green hover:bg-[#065a52] text-white px-4 py-2 rounded-lg transition-all duration-200;
+        }
+        .btn-secondary {
+            @apply bg-white border border-aise-green text-aise-green hover:bg-aise-bg px-4 py-2 rounded-lg transition-all duration-200;
         }
     </style>
 </head>
-<body class="h-full bg-gray-100 font-sans antialiased">
+<body class="h-full bg-aise-bg font-sans antialiased">
 
     <div class="flex h-full">
         
         <!-- Sidebar -->
-        <aside class="w-64 bg-gradient-to-b from-blue-800 to-blue-900 text-white shadow-xl">
-            <div class="p-6">
+        <aside class="w-64 bg-gradient-to-b from-aise-green to-[#065a52] text-white shadow-2xl">
+            <div class="p-6 border-b border-white/10">
                 <h1 class="text-2xl font-bold flex items-center gap-2">
-                    <i class="fas fa-cogs"></i> AISE Backoffice
+                    <i class="fas fa-cogs text-aise-yellow"></i> 
+                    AISE Backoffice
                 </h1>
             </div>
             <nav class="mt-6">
                 <ul class="space-y-1 px-3">
+                    <!-- DASHBOARD -->
                     <li>
                         <a href="{% url 'users:backoffice_dashboard' %}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all sidebar-link {% if request.resolver_match.url_name == 'backoffice_dashboard' %}active-link{% endif %}">
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-aise-yellow hover:text-text-dark menu-link {% if request.resolver_match.url_name == 'backoffice_dashboard' %}active-link{% endif %}">
                             <i class="fas fa-tachometer-alt"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
+
+                    <!-- UTILISATEURS -->
                     <li>
                         <a href="{% url 'users:backoffice_users' %}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all sidebar-link {% if request.resolver_match.url_name == 'backoffice_users' %}active-link{% endif %}">
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-aise-yellow hover:text-text-dark menu-link {% if request.resolver_match.url_name == 'backoffice_users' %}active-link{% endif %}">
                             <i class="fas fa-users"></i>
                             <span>Utilisateurs</span>
                         </a>
                     </li>
+
+                    <!-- PROJETS -->
                     <li>
                         <a href="{% url 'projets:backoffice_projets' %}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all sidebar-link {% if request.resolver_match.url_name == 'backoffice_users' %}active-link{% endif %}">
-                            <i class="fas fa-users"></i>
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-aise-yellow hover:text-text-dark menu-link {% if 'projets' in request.resolver_match.url_name %}active-link{% endif %}">
+                            <i class="fas fa-project-diagram"></i>
                             <span>Projets</span>
                         </a>
                     </li>
+
+                    <!-- RÉCLAMATIONS -->
                     <li>
                         <a href="{% url 'reclamations:backoffice_reclamations' %}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all sidebar-link {% if request.resolver_match.url_name == 'backoffice_users' %}active-link{% endif %}">
-                            <i class="fas fa-users"></i>
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-aise-yellow hover:text-text-dark menu-link {% if 'reclamations' in request.resolver_match.url_name %}active-link{% endif %}">
+                            <i class="fas fa-exclamation-triangle"></i>
                             <span>Réclamations</span>
                         </a>
                     </li>
+
+                    <!-- BLOGS -->
                     <li>
                         <a href="{% url 'blogs:backoffice_blogs' %}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all sidebar-link {% if request.resolver_match.url_name == 'backoffice_users' %}active-link{% endif %}">
-                            <i class="fas fa-users"></i>
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-aise-yellow hover:text-text-dark menu-link {% if 'blogs' in request.resolver_match.url_name %}active-link{% endif %}">
+                            <i class="fas fa-blog"></i>
                             <span>La voix d'AISE</span>
                         </a>
                     </li>
+
+                    <!-- PARTENAIRES -->
                     <li>
                         <a href="{% url 'partenaires:backoffice_partenaires' %}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all sidebar-link {% if request.resolver_match.url_name == 'backoffice_users' %}active-link{% endif %}">
-                            <i class="fas fa-users"></i>
-                            <span>Partenaire</span>
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-aise-yellow hover:text-text-dark menu-link {% if 'partenaires' in request.resolver_match.url_name %}active-link{% endif %}">
+                            <i class="fas fa-handshake"></i>
+                            <span>Partenaires</span>
                         </a>
                     </li>
-                    <!-- Ajoute d'autres menus ici -->
-                    <li class="pt-8">
+
+                    <!-- DÉCONNEXION : HOVER JAUNE -->
+                    <li class="pt-8 border-t border-white/10 mt-8">
                         <a href="{% url 'users:logout' %}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-300 hover:bg-red-900 hover:text-white transition-all">
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-aise-yellow hover:text-text-dark menu-link">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Déconnexion</span>
                         </a>
@@ -90,25 +135,29 @@
             <!-- Top Bar -->
             <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold text-gray-800">
+                    <h2 class="text-xl font-semibold text-text-dark">
                         {% block page_title %}Dashboard{% endblock %}
                     </h2>
                     <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-600">Bonjour, <strong>{{ user.username }}</strong></span>
-                        <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                            {{ user.username|slice:":1"|upper }}
+                        <span class="text-sm text-text-medium">Bonjour, <strong>{{ user.get_full_name|default:user.username }}</strong></span>
+                        <div class="w-10 h-10 bg-aise-green rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            {{ user.get_full_name|slice:":1"|upper|default:user.username|slice:":1"|upper }}
                         </div>
                     </div>
                 </div>
             </header>
 
             <!-- Page Content -->
-            <main class="flex-1 p-6 overflow-y-auto">
+            <main class="flex-1 p-6 overflow-y-auto bg-aise-bg">
                 <div class="max-w-7xl mx-auto">
                     {% if messages %}
                         <div class="mb-6 space-y-2">
                             {% for message in messages %}
-                                <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200{% elif message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                                <div class="p-4 rounded-lg border font-medium text-sm
+                                    {% if message.tags == 'success' %}bg-green-50 text-green-800 border-green-200
+                                    {% elif message.tags == 'error' %}bg-red-50 text-red-800 border-red-200
+                                    {% elif message.tags == 'warning' %}bg-yellow-50 text-yellow-800 border-yellow-200
+                                    {% else %}bg-aise-bg text-text-dark border border-gray-300{% endif %}">
                                     {{ message }}
                                 </div>
                             {% endfor %}

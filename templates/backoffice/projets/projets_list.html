@@ -4,107 +4,157 @@
 {% block page_title %}Projets{% endblock %}
 
 {% block content %}
-<div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Projets</h1>
-    <a href="{% url 'projets:backoffice_projet_add' %}" 
-       class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
-        <i class="fas fa-plus"></i> Ajouter projet
-    </a>
+<div class="mb-8">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 class="text-3xl font-bold text-text-dark flex items-center gap-3">
+            <i class="fas fa-project-diagram text-aise-green text-3xl"></i>
+            <span>Projets</span>
+        </h1>
+        <a href="{% url 'projets:backoffice_projet_add' %}" 
+           class="bg-gradient-to-r from-aise-green to-[#065a52] hover:from-[#065a52] hover:to-aise-green text-white px-6 py-3.5 rounded-xl font-bold flex items-center gap-2.5 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+            <i class="fas fa-plus"></i> Nouveau projet
+        </a>
+    </div>
 </div>
 
-<!-- RECHERCHE + FILTRE + EXPORT -->
-<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-    <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
-        <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Recherche</label>
-            <input name="q" value="{{ request.GET.q }}" placeholder="Titre ou description..." 
-                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+<!-- FILTRES + RECHERCHE + EXPORT -->
+<div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-8">
+    <form method="get" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+        <!-- Recherche -->
+        <div class="md:col-span-5">
+            <label class="block text-sm font-semibold text-text-dark mb-2">Recherche</label>
+            <div class="relative">
+                <input name="q" value="{{ request.GET.q }}" placeholder="Titre, description, créateur..."
+                       class="w-full pl-11 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-aise-green focus:ring-4 focus:ring-aise-green/10 transition-all text-base">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-text-medium"></i>
+            </div>
         </div>
-        <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Statut</label>
-            <select name="statut" onchange="this.form.submit()" 
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
-                <option value="">Tous</option>
+
+        <!-- Statut -->
+        <div class="md:col-span-3">
+            <label class="block text-sm font-semibold text-text-dark mb-2">Statut</label>
+            <select name="statut" onchange="this.form.submit()"
+                    class="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-aise-green focus:ring-4 focus:ring-aise-green/10 transition-all text-base appearance-none bg-white">
+                <option value="">Tous les statuts</option>
                 <option value="en_attente" {% if request.GET.statut == 'en_attente' %}selected{% endif %}>En attente</option>
                 <option value="en_cours" {% if request.GET.statut == 'en_cours' %}selected{% endif %}>En cours</option>
                 <option value="termine" {% if request.GET.statut == 'termine' %}selected{% endif %}>Terminé</option>
             </select>
         </div>
-        <div>
-            <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
-                <i class="fas fa-search mr-1"></i> Rechercher
+
+        <!-- Boutons -->
+        <div class="md:col-span-4 flex gap-3">
+            <button type="submit"
+                    class="flex-1 bg-aise-green hover:bg-[#065a52] text-white px-5 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all transform hover:scale-105 shadow-md">
+                <i class="fas fa-filter"></i> Filtrer
             </button>
-        </div>
-        <div class="flex gap-2 justify-end">
-        
             <a href="{% url 'projets:export_projets_pdf_filtered' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.statut %}statut={{ request.GET.statut }}{% endif %}"
-                class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 text-xs flex items-center gap-1"
-                target="_blank">
-                    <i class="fas fa-file-pdf"></i> PDF
-                </a>
+               class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-5 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all transform hover:scale-105 shadow-md"
+               target="_blank">
+                <i class="fas fa-file-pdf"></i> PDF
+            </a>
         </div>
     </form>
 </div>
 
-<!-- TABLEAU -->
-<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+<!-- TABLEAU PRO -->
+<div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full">
-            <thead class="bg-gray-50 border-b border-gray-200">
+            <!-- En-tête -->
+            <thead class="bg-gradient-to-r from-aise-green/5 to-aise-yellow/5 border-b-2 border-aise-green/20">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Projet</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Créé le</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-text-dark uppercase tracking-widest">Projet</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-text-dark uppercase tracking-widest">Créateur</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-text-dark uppercase tracking-widest">Statut</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-text-dark uppercase tracking-widest">Créé le</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-text-dark uppercase tracking-widest">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
+
+            <!-- Corps -->
+            <tbody class="divide-y divide-gray-100">
                 {% for projet in projets %}
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
+                <tr class="hover:bg-gradient-to-r hover:from-aise-yellow/5 hover:to-white transition-all duration-300 group">
+                    <!-- Projet + Image -->
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-4">
                             {% if projet.image %}
-                                <img src="{{ projet.image.url }}" alt="" class="w-12 h-12 object-cover rounded-lg">
+                                <img src="{{ projet.image.url }}" alt="{{ projet.titre }}" class="w-14 h-14 object-cover rounded-xl shadow-sm group-hover:scale-105 transition-transform">
                             {% else %}
-                                <div class="w-12 h-12 bg-gray-200 border-2 border-dashed rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-image text-gray-400"></i>
+                                <div class="w-14 h-14 bg-gray-100 border-2 border-dashed rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-image text-gray-400 text-xl"></i>
                                 </div>
                             {% endif %}
                             <div>
-                                <p class="text-sm font-medium text-gray-900">{{ projet.titre }}</p>
-                                <p class="text-xs text-gray-500">par {{ projet.createur.username }}</p>
+                                <p class="font-bold text-text-dark line-clamp-1">{{ projet.titre }}</p>
+                                <p class="text-xs text-text-medium line-clamp-2">{{ projet.description|truncatewords:10 }}</p>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4">
+
+                    <!-- Créateur -->
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-2">
+                            <div class="w-9 h-9 bg-aise-green rounded-full flex items-center justify-center text-white font-bold text-xs">
+                                {{ projet.createur.username|slice:":1"|upper }}
+                            </div>
+                            <span class="font-medium text-text-dark">{{ projet.createur.username }}</span>
+                        </div>
+                    </td>
+
+                    <!-- Statut -->
+                    <td class="px-6 py-5">
                         {% if projet.statut == 'termine' %}
-                            <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-800">Terminé</span>
+                            <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-white text-green-700 border-2 border-green-200 shadow-sm">
+                                <i class="fas fa-check-circle mr-1.5"></i> Terminé
+                            </span>
                         {% elif projet.statut == 'en_cours' %}
-                            <span class="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-800">En cours</span>
+                            <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-white text-blue-700 border-2 border-blue-200 shadow-sm">
+                                <i class="fas fa-sync-alt mr-1.5"></i> En cours
+                            </span>
                         {% else %}
-                            <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">En attente</span>
+                            <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-white text-aise-yellow border-2 border-aise-yellow/50 shadow-sm">
+                                <i class="fas fa-clock mr-1.5"></i> En attente
+                            </span>
                         {% endif %}
                     </td>
-                    <td class="px-6 py-4 text-sm text-gray-500">
+
+                    <!-- Date -->
+                    <td class="px-6 py-5 text-sm font-medium text-text-medium">
                         {{ projet.date_creation|date:"d/m/Y" }}
                     </td>
-                    <td class="px-6 py-4 text-sm space-x-3">
-                        <a href="{% url 'projets:backoffice_projet_edit' projet.id %}" class="text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a href="{% url 'projets:backoffice_projet_delete' projet.id %}" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </a>
+
+                    <!-- Actions -->
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-4">
+                            <a href="{% url 'projets:backoffice_projet_edit' projet.id %}" 
+                               class="text-aise-green hover:text-[#065a52] transition-transform transform hover:scale-125"
+                               title="Modifier">
+                                <i class="fas fa-edit text-lg"></i>
+                            </a>
+                            <a href="{% url 'projets:backoffice_projet_delete' projet.id %}" 
+                               class="text-red-600 hover:text-red-700 transition-transform transform hover:scale-125"
+                               title="Supprimer">
+                                <i class="fas fa-trash text-lg"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="px-6 py-12 text-center text-gray-500">
-                        <i class="fas fa-folder-open text-3xl mb-2 block"></i>
-                        Aucun projet.
-                        {% if request.GET.q or request.GET.statut %}
-                            <br><a href="{% url 'projets:backoffice_projets' %}" class="text-blue-600 hover:underline">Réinitialiser</a>
-                        {% endif %}
+                    <td colspan="5" class="px-6 py-20 text-center">
+                        <div class="max-w-xs mx-auto">
+                            <i class="fas fa-folder-open text-7xl text-gray-200 mb-4 block"></i>
+                            <p class="text-xl font-medium text-text-medium">Aucun projet trouvé</p>
+                            <p class="text-sm text-gray-500 mt-2">
+                                {% if request.GET.q or request.GET.statut %}
+                                    <a href="{% url 'projets:backoffice_projets' %}" class="text-aise-green hover:underline font-medium">Réinitialiser les filtres</a>
+                                {% else %}
+                                    Ajoutez le premier projet !
+                                {% endif %}
+                            </p>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -114,17 +164,25 @@
 
     <!-- Pagination -->
     {% if is_paginated %}
-    <div class="px-6 py-3 bg-gray-50 border-t flex justify-between text-sm">
-        <div>Affichage {{ page_obj.start_index }}–{{ page_obj.end_index }} sur {{ page_obj.paginator.count }}</div>
-        <div class="flex gap-1">
+    <div class="px-6 py-4 bg-aise-green/5 border-t flex flex-col sm:flex-row justify-between items-center text-sm font-medium">
+        <div class="text-text-medium">
+            Affichage {{ page_obj.start_index }}–{{ page_obj.end_index }} sur {{ page_obj.paginator.count }} projets
+        </div>
+        <div class="flex gap-2 mt-3 sm:mt-0">
             {% if page_obj.has_previous %}
                 <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.statut %}&statut={{ request.GET.statut }}{% endif %}" 
-                   class="px-3 py-1 border rounded hover:bg-gray-100">Précédent</a>
+                   class="w-10 h-10 rounded-xl border-2 border-aise-green/30 flex items-center justify-center hover:bg-aise-green hover:text-white transition">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
             {% endif %}
-            <span class="px-3 py-1">Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+            <span class="px-4 py-2 bg-aise-green text-white rounded-xl">
+                Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+            </span>
             {% if page_obj.has_next %}
                 <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.statut %}&statut={{ request.GET.statut }}{% endif %}" 
-                   class="px-3 py-1 border rounded hover:bg-gray-100">Suivant</a>
+                   class="w-10 h-10 rounded-xl border-2 border-aise-green/30 flex items-center justify-center hover:bg-aise-green hover:text-white transition">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
             {% endif %}
         </div>
     </div>
