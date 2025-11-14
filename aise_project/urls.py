@@ -27,6 +27,8 @@ urlpatterns = [
     
     path('reclamations/', include('reclamations.urls')),
     path('partenaires/', include('partenaires.urls')),
+
+    path('', include('django.contrib.auth.urls')),
 ]
 
 if settings.DEBUG:

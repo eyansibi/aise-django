@@ -1,6 +1,7 @@
 # projets/urls.py
 from django.urls import path
 from . import views
+from django.urls import path, include
 
 app_name = 'projets'
 
@@ -19,4 +20,7 @@ urlpatterns = [
     # path('admin/export/pdf/', views.export_projets_pdf, name='export_projets_pdf'),
 
     path('admin/export/pdf/', views.export_projets_pdf_filtered, name='export_projets_pdf_filtered'),
+
+    # AJOUTE CETTE LIGNE
+    path('', include('django.contrib.auth.urls')),   # Reset password, login, logout
 ]
