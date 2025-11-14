@@ -26,6 +26,7 @@ urlpatterns = [
     path('blogs/', include('blogs.urls')), 
     
     path('reclamations/', include('reclamations.urls')),
+    path('partenaires/', include('partenaires.urls')),
 ]
 
 if settings.DEBUG:

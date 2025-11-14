@@ -1,0 +1,70 @@
+{% extends "backoffice/base.html" %}
+{% block title %}Détail - {{ object.nom }}{% endblock %}
+{% block page_title %}Détail du partenaire{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div class="p-6 border-b border-gray-200">
+        <div class="flex justify-between items-start">
+            <div class="flex items-center gap-4">
+                {% if object.logo %}
+                    <img src="{{ object.logo.url }}" alt="{{ object.nom }}" class="h-20 w-20 object-contain rounded-lg border">
+                {% else %}
+                    <div class="h-20 w-20 bg-gray-200 border-2 border-dashed rounded-lg flex items-center justify-center">
+                        <i class="fas fa-image text-gray-400 text-2xl"></i>
+                    </div>
+                {% endif %}
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">{{ object.nom }}</h1>
+                    <p class="text-sm text-gray-500">Ajouté le {{ object.date_ajout|date:"d/m/Y à H:i" }}</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <a href="{% url 'partenaires:update' object.pk %}" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 flex items-center gap-2">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                <a href="{% url 'partenaires:delete' object.pk %}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2">
+                    <i class="fas fa-trash"></i> Supprimer
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-6 space-y-6">
+        <div>
+            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Site web</h3>
+            <p class="mt-1">
+                {% if object.site_web %}
+                    <a href="{{ object.site_web }}" target="_blank" class="text-blue-600 hover:underline flex items-center gap-1">
+                        <i class="fas fa-external-link-alt"></i> {{ object.site_web }}
+                    </a>
+                {% else %}
+                    <span class="text-gray-400">Aucun site web renseigné</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <div>
+            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Description</h3>
+            <p class="mt-1 text-gray-700 whitespace-pre-line">
+                {{ object.description|default:"Aucune description disponible." }}
+            </p>
+        </div>
+
+        <div>
+            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Statut</h3>
+            <p class="mt-1">
+                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {% if object.actif %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                    {{ object.actif|yesno:"Actif,Inactif" }}
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+        <a href="{% url 'partenaires:list' %}" class="text-blue-600 hover:underline flex items-center gap-1">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+    </div>
+</div>
+{% endblock %}

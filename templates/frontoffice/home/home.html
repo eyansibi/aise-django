@@ -309,7 +309,67 @@
         </div>
     </div>
 </section>
+<!-- ====================== PARTENAIRES – DÉFILEMENT INFINI ====================== -->
+{% if partenaires %}
+<section class="py-16 bg-white border-t border-gray-100">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800">
+                Nos <span class="text-[#087065]">Partenaires</span>
+            </h2>
+            <p class="text-gray-600 mt-2">Collaborations de confiance</p>
+        </div>
 
+        <div class="overflow-hidden">
+            <div class="flex animate-marquee whitespace-nowrap">
+                {% for partenaire in partenaires %}
+                <div class="flex-shrink-0 mx-8 group">
+                    <a href="{{ partenaire.site_web|default:'#' }}" target="_blank" class="block p-4 bg-white rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                        {% if partenaire.logo %}
+                            <img src="{{ partenaire.logo.url }}"
+                                 alt="{{ partenaire.nom }}"
+                                 class="h-16 w-auto object-contain mx-auto **transition-all duration-500 group-hover:scale-105**"> {% else %}
+                            <div class="h-16 flex items-center justify-center bg-gray-100 rounded-lg">
+                                <span class="text-gray-500 text-sm font-semibold">{{ partenaire.nom|truncatechars:10 }}</span>
+                            </div>
+                        {% endif %}
+                    </a>
+                </div>
+                {% endfor %}
+
+                {% for partenaire in partenaires %}
+                <div class="flex-shrink-0 mx-8 group">
+                    <a href="{{ partenaire.site_web|default:'#' }}" target="_blank" class="block p-4 bg-white rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                        {% if partenaire.logo %}
+                            <img src="{{ partenaire.logo.url }}"
+                                 alt="{{ partenaire.nom }}"
+                                 class="h-16 w-auto object-contain mx-auto **transition-all duration-500 group-hover:scale-105**"> {% else %}
+                            <div class="h-16 flex items-center justify-center bg-gray-100 rounded-lg">
+                                <span class="text-gray-500 text-sm font-semibold">{{ partenaire.nom|truncatechars:10 }}</span>
+                            </div>
+                        {% endif %}
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+        display: flex;
+        animation: marquee 30s linear infinite;
+    }
+    .animate-marquee:hover {
+        animation-play-state: paused;
+    }
+</style>
+{% endif %}
 <!-- ====================== FAQ – 100% LARGEUR ====================== -->
 <section class="faq bg-[#f8f9fa] py-24">
     <div class="full-width">
@@ -408,4 +468,6 @@
         </div>
     </div>
 </section>
+
+
 {% endblock %}

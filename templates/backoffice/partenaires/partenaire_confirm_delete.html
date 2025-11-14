@@ -1,0 +1,30 @@
+{% extends "backoffice/base.html" %}
+
+{% block title %}Supprimer {{ partenaire.nom }}{% endblock %}
+{% block page_title %}Supprimer le partenaire{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-md mx-auto text-center">
+    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+        <i class="fas fa-exclamation-triangle text-3xl text-red-600"></i>
+    </div>
+
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">
+        Confirmer la suppression
+    </h3>
+    <p class="text-gray-600 mb-6">
+        Êtes-vous sûr de vouloir supprimer le partenaire <strong class="text-red-600">{{ partenaire.nom }}</strong> ?
+        <br><span class="text-sm">Cette action est irréversible.</span>
+    </p>
+
+    <form method="post" class="inline">
+        {% csrf_token %}
+        <button type="submit" class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 mr-3">
+            Oui, supprimer
+        </button>
+    </form>
+    <a href="{% url 'partenaires:backoffice_partenaires' %}" class="px-5 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+        Annuler
+    </a>
+</div>
+{% endblock %}

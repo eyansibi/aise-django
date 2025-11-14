@@ -20,14 +20,21 @@ from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from collections import Counter
 import re
+from partenaires.models import Partenaire
 
 User = get_user_model()
 
 import json
 
-def home(request):
-    return render(request, 'frontoffice/home/home.html')
+# def home(request):
+#     return render(request, 'frontoffice/home/home.html')
 
+def home(request):
+    # Récupère uniquement les partenaires actifs
+    partenaires = Partenaire.objects.filter(actif=True).order_by('?')[:15]  # 15 max
+    return render(request, 'frontoffice/home/home.html', {
+        'partenaires': partenaires
+    })
 def contact_view(request):
     return render(request, 'frontoffice/contact.html')
 
